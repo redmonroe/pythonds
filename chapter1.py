@@ -1,5 +1,8 @@
 #chapter1
 # 1Implement the simple methods getNum and getDen that will return the numerator and denominator of a fraction.
+def sum(a, b):
+    return a + b
+
 class Fraction(object):
 
     def __init__(self, top, bottom):
@@ -28,4 +31,5 @@ class Fraction(object):
 
 my_fraction = Fraction(1, 2)
 my_fraction2 = Fraction(1, 4) 
-print(my_fraction + my_fraction2)
+test_frac = my_fraction + my_fraction2
+print(test_frac)
