@@ -3,9 +3,23 @@
 class Fraction(object):
 
     def __init__(self, top, bottom):
-        common = self.gcd(top, bottom)
-        self.num = top//common
-        self.den = bottom//common
+        if top < 0 and bottom < 0:
+            top = abs(top)
+            bottom = abs(bottom)
+        elif bottom < 0:
+             top = -top
+             bottom = abs(bottom)
+        if not isinstance(top, int):
+            valEr = ValueError(f'{top} is not an integer.')
+            raise valEr
+        elif not isinstance(bottom, int):
+            valEr = ValueError(f'{bottom} is not an integer.')
+            raise valEr
+        else:
+            print(type(top), top, type(bottom), bottom)
+            common = self.gcd(top, bottom)
+            self.num = top//common
+            self.den = bottom//common
 
     def __str__(self):
         return f'{self.num}/{self.den}'
@@ -61,6 +75,8 @@ class Fraction(object):
         second_num = self.den * other_frac.num
         return first_num != second_num
 
+    __radd__ == __add__
+    
     def get_num(self):
         return self.num
 
@@ -80,6 +96,7 @@ class Fraction(object):
 my_fraction = Fraction(1, 5)
 my_fraction2 = Fraction(1, 10) 
 my_fraction3 = Fraction(1, 10) 
+neg_fraction = Fraction(-1, 99)
 test_frac = my_fraction + my_fraction2
 test_sub = my_fraction2 - my_fraction
 test_mul = my_fraction2 * my_fraction
@@ -100,5 +117,8 @@ print('ge test:', test_ge)
 print('ge2 test:', test_ge2)
 print('le test:', test_le)
 print(f'ne test {my_fraction2} & {my_fraction3}:', test_ne)
-print(my_fraction.get_num())
-print(my_fraction.get_den())
+print('abs test:', neg_fraction)
+
+dec = 1.1
+my_fraction4 = Fraction(dec, 10) 
+print(my_fraction4)
