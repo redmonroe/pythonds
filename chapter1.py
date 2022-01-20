@@ -1,13 +1,11 @@
 #chapter1
 # 1Implement the simple methods getNum and getDen that will return the numerator and denominator of a fraction.
-def sum(a, b):
-    return a + b
-
 class Fraction(object):
 
     def __init__(self, top, bottom):
-        self.num = top
-        self.den = bottom
+        common = self.gcd(top, bottom)
+        self.num = top//common
+        self.den = bottom//common
 
     def __str__(self):
         return f'{self.num}/{self.den}'
@@ -15,9 +13,33 @@ class Fraction(object):
     def __add__(self, other_frac):
         newnum = self.num * other_frac.den + self.den * other_frac.num
         newden = self.den * other_frac.den
-        common = self.gcd(newnum, newden)
+        return Fraction(newnum, newden)
 
-        return Fraction(newnum//common, newden//common)
+    def __sub__(self, other_frac):
+        newnum = self.num * other_frac.den - self.den * other_frac.num
+        newden = self.den * other_frac.den
+        return Fraction(newnum, newden)
+
+    def __mul__(self, other_frac):
+        newnum = self.num * other_frac.num
+        newden = self.den * other_frac.den
+        return Fraction(newnum, newden)
+
+    def __truediv__(self, other_frac):
+        newnum = self.num * other_frac.den
+        newden = self.den * other_frac.num
+        return Fraction(newnum, newden)
+
+    def __gt__(self, other_frac):
+        first_num = self.num * other_frac.den
+        second_num = self.den * other_frac.num
+        return first_num > second_num
+
+    def get_num(self):
+        return self.num
+
+    def get_den(self):
+        return self.den
 
     def gcd(self, num, den):
         while num % den != 0:
@@ -29,7 +51,17 @@ class Fraction(object):
         return den
 
 
-my_fraction = Fraction(1, 2)
-my_fraction2 = Fraction(1, 4) 
+my_fraction = Fraction(1, 5)
+my_fraction2 = Fraction(1, 10) 
 test_frac = my_fraction + my_fraction2
-print(test_frac)
+test_sub = my_fraction2 - my_fraction
+test_mul = my_fraction2 * my_fraction
+test_div = my_fraction2 / my_fraction
+test_gt = my_fraction2 > my_fraction
+print('addition test:', test_frac)
+print('subtraction test:', test_sub)
+print('multiplication test:', test_mul)
+print('division test:', test_div)
+print('greater than test:', test_gt)
+print(my_fraction.get_num())
+print(my_fraction.get_den())
