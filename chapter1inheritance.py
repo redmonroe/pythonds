@@ -2,128 +2,162 @@
 # what is the output value? 
 # a powerful part of object-oriented programming is method that will use
 # code that does not exist yet
+class LogicGate:
 
-class LogicGate(object):
-
-    def __init__(self, n):
-        self.label = n
+    def __init__(self,n):
+        self.name = n
         self.output = None
 
-    def get_label(self):
-        return self.label
+    def getName(self):
+        return self.name
 
-    def get_output(self):
-        self.output = self.perform_gate_logic()
+    def getOutput(self):
+        self.output = self.performGateLogic()
         return self.output
 
+
 class BinaryGate(LogicGate):
-    # common pattern for child classes: call parent init then add whatever other information child needs
-    def __init__(self, n):
-        LogicGate.__init__(self, n)
 
-        self.pin_a = None
-        self.pin_b = None
+    def __init__(self,n):
+        LogicGate.__init__(self,n)
 
-    def get_pin_a(self):
-        return(int(input("Enter Pin A input for gate"+ self.get_label()+ "----->")))
+        self.pinA = None
+        self.pinB = None
 
-    def get_pin_b(self):
-        return(int(input("Enter Pin B input for gate"+ self.get_label()+ "----->")))
-
-    def set_next_pin(self, source):
-        if self.pin_a == None:
-            self.pin_a = source
+    def getPinA(self):
+        if self.pinA == None:
+            return int(input("Enter Pin A input for gate "+self.getName()+"-->"))
         else:
-            if self.pin_a == None:
-                self.pin_b = source
+            return self.pinA.getFrom().getOutput()
+
+    def getPinB(self):
+        if self.pinB == None:
+            return int(input("Enter Pin B input for gate "+self.getName()+"-->"))
+        else:
+            return self.pinB.getFrom().getOutput()
+
+    def setNextPin(self,source):
+        if self.pinA == None:
+            self.pinA = source
+        else:
+            if self.pinB == None:
+                self.pinB = source
             else:
-                raise RuntimeError("Error: No empty pins jw")
+                print("Cannot Connect: NO EMPTY PINS on this gate")
+
+
+class AndGate(BinaryGate):
+
+    def __init__(self,n):
+        BinaryGate.__init__(self,n)
+
+    def performGateLogic(self):
+
+        a = self.getPinA()
+        b = self.getPinB()
+        if a==1 and b==1:
+            return 1
+        else:
+            return 0
+#Nand gate: work like AndGate except that were And returns 1, Nand return 0
+class NandGate(AndGate):
+    # functionality does not require a new __init__ method
+    def performGateLogic(self):
+        if super().performGateLogic() == 1: # call performGateLogic in the parent
+            return 0
+        else:
+            return 1
+
     
+
+class OrGate(BinaryGate):
+
+    def __init__(self,n):
+        BinaryGate.__init__(self,n)
+
+    def performGateLogic(self):
+
+        a = self.getPinA()
+        b = self.getPinB()
+        if a ==1 or b==1:
+            return 1
+        else:
+            return 0
+
+class NorGate(OrGate):
+
+    def performGateLogic(self):
+        if super().performGateLogic() == 1:
+            return 0
+        else:
+            return 1
+
+#Nor gate: works like OrGate except that were OrGate returns 0, NorGate returns a 1
+
 class UnaryGate(LogicGate):
 
-    def __init(self, n):
-        LogicGate.__init__(self, n)
+    def __init__(self,n):
+        LogicGate.__init__(self,n)
 
         self.pin = None
 
-    def get_pin(self):
+    def getPin(self):
         if self.pin == None:
-            return(int(input("Enter Pin input for gate"+ self.get_label()+ "------>")))
+            return int(input("Enter Pin input for gate "+self.getName()+"-->"))
         else:
-            return self.pin.get_from().get_output()
+            return self.pin.getFrom().getOutput()
 
-    def set_next_pin(self,source):
+    def setNextPin(self,source):
         if self.pin == None:
             self.pin = source
         else:
             print("Cannot Connect: NO EMPTY PINS on this gate")
 
-class AndGate(BinaryGate):
-    
-    def __init__(self, n):
-        super(AndGate, self).__init__(n)
-
-    def perform_gate_logic(self):
-
-        a = self.get_pin_a()
-        b = self.get_pin_b()
-        if a==1 and b==1:
-            return 1
-        else:
-            return 0
-
-class OrGate(BinaryGate):
-    def __init__(self, n):
-        super(OrGate, self).__init__(n)
-
-    def perform_gate_logic(self):
-        a = self.get_pin_a()
-        b = self.get_pin_b()
-        if a==1 or b==1:
-            return 1
-        else:
-            return 0
 
 class NotGate(UnaryGate):
-    def __init__(self, n):
-        super(UnaryGate, self).__init__(n)
 
-    def perform_gate_logic(self):
-        if self.get_pin:
-            if a==0:
-                return 1
-            else:
-                return 0
+    def __init__(self,n):
+        UnaryGate.__init__(self,n)
 
-class Connector():
+    def performGateLogic(self):
+        if self.getPin():
+            return 0
+        else:
+            return 1
+
+
+
+
+class Connector:
+
     def __init__(self, fgate, tgate):
         self.fromgate = fgate
         self.togate = tgate
 
-        tgate.set_next_pin(self)
+        tgate.setNextPin(self)
 
-    def get_from(self):
+    def getFrom(self):
         return self.fromgate
 
-    def get_to(self):
+    def getTo(self):
         return self.togate
 
-# g1 = NotGate("G1")
-# print(g1.get_output())
+
 def main():
-    g1 = AndGate('G1')
-    g2 = AndGate('G2')
-    g3 = OrGate('G3')
-    g4 = NotGate('G4')
-    c1 = Connector(g1, g2)
-    c2 = Connector(g2, g3)
-    c3 = Connector(g3, g4)
-    print(g4.get_output())
+   g1 = AndGate("G1")
+   g2 = AndGate("G2")
+   g3 = OrGate("G3")
+   g4 = NotGate("G4")
+   c1 = Connector(g1,g3)
+   c2 = Connector(g2,g3)
+   c3 = Connector(g3,g4)
+   print(g4.getOutput())
 
-def what_is_going_on_here():
-    g1 = AndGate("X1")
-    print(g1.get_output())
-    g2 = AndGate("X2")
-    
+   g5 = NandGate("G5")
+   g6 = NorGate("G6")
+#    g7 = XorGate("G7")
+   print(g6.getOutput())
 
-what_is_going_on_here()
+
+
+main()
