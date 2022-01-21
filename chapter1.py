@@ -24,6 +24,9 @@ class Fraction(object):
     def __str__(self):
         return f'{self.num}/{self.den}'
 
+    def __repr__(self):
+        return f'Fraction({self.num}/{self.den})'
+
     def __add__(self, other_frac):
         newnum = self.num * other_frac.den + self.den * other_frac.num
         newden = self.den * other_frac.den
@@ -75,7 +78,8 @@ class Fraction(object):
         second_num = self.den * other_frac.num
         return first_num != second_num
 
-    __radd__ == __add__
+    def __radd__(self):
+        __radd__ == __add__
     
     def get_num(self):
         return self.num
@@ -107,6 +111,7 @@ test_ge = my_fraction2 >= my_fraction
 test_ge2 = my_fraction2 >= my_fraction3
 test_le = my_fraction2 >= my_fraction3
 test_ne = my_fraction2 != my_fraction3
+print(my_fraction.__repr__())
 print('addition test:', test_frac)
 print('subtraction test:', test_sub)
 print('multiplication test:', test_mul)
