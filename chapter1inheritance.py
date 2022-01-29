@@ -45,7 +45,6 @@ class BinaryGate(LogicGate):
             else:
                 print("Cannot Connect: NO EMPTY PINS on this gate")
 
-
 class AndGate(BinaryGate):
 
     def __init__(self,n):
@@ -59,7 +58,7 @@ class AndGate(BinaryGate):
             return 1
         else:
             return 0
-#Nand gate: work like AndGate except that were And returns 1, Nand return 0
+
 class NandGate(AndGate):
     # functionality does not require a new __init__ method
     def performGateLogic(self):
@@ -67,8 +66,6 @@ class NandGate(AndGate):
             return 0
         else:
             return 1
-
-    
 
 class OrGate(BinaryGate):
 
@@ -147,47 +144,77 @@ class Connector:
     def getTo(self):
         return self.togate
 
+class HalfAdder(BinaryGate):
 
-def main():
-#    g1 = AndGate("G1")
-#    g2 = AndGate("G2")
-#    g3 = OrGate("G3")
-#    g4 = NotGate("G4")
-#    c1 = Connector(g1,g3)
-#    c2 = Connector(g2,g3)
-#    c3 = Connector(g3,g4)
-#    print(g4.getOutput())
+    def __init__(self,n):
+        BinaryGate.__init__(self,n)
 
-#    g5 = NandGate("G5")
-#    g6 = NorGate("G6")
-   g7 = XorGate("G7")
-   print(g7.getOutput())
+    def performGateLogic(self):
+        a = self.getPinA()
+        b = self.getPinB()
+
+        if a + b == 1:
+            sum1 = 1
+        else:
+            sum1 = 0
+
+        if sum1 == 0:
+            carry = 1
+        else:
+            carry = 0
+
+        print('sum:', sum1, 'carry:', carry)
+        return sum1, carry
+
+class FullAdder(BinaryGate):
+
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.subsum = None
+        self.subxor = None
+        self.sumfinal = None
+        self.carryfinal = None
+        self.output = None
+
+    def sum1(self):
+        if self.a + self.b == 1:
+            self.subxor = 1
+        else:
+            self.subxor = 0
+
+        if self.subxor + self.c == 1:
+            self.sumfinal = 1
+        else:
+            self.sumfinal = 0
+
+    def carry(self):
+        # A and B
+        if self.a==1 and self.b==1:
+            self.subsum = 1
+        else:
+            self.subsum = 0
+
+        if self.subxor + self.subsum == 1:
+            self.carryfinal = 1
+        else:
+            self.carryfinal = 0
+        
+    def return1(self):
+        print('a:', self.a, 'b:', self.b, 'c:', self.c, 'subxor:', self.subxor, 'sumfinal:', self.sumfinal, 'carryfinal:', self.carryfinal )
+
 
 
 def half_adder():
     print('this is a half adder')
-    a = 1
-    b = 0
+    ha1 = HalfAdder('ha1')
+    print(ha1.getOutput())
 
-    if a + b == 1:
-        sum1 = 1
-    else:
-        sum1 = 0
+def full_adder():
+    fa = FullAdder(1, 0, 0)
+    fa.sum1()
+    fa.carry()
+    fa.return1()
 
-    if sum1 == 0:
-        carry = 1
-    else:
-        carry = 0
-
-    assert sum1 == 1
-    assert carry == 0
-    # sum1 = XorGate("S1")
-    # carry = AndGate("C1")
-    # ha = Connector(sum1, carry)
-    # print(carry.getOutput())
-    # print(sum1.getOutput())
-    # print(sum1)
-    # print(ha)
-
-half_adder()
-# main()
+full_adder()
