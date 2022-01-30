@@ -168,41 +168,70 @@ class HalfAdder(BinaryGate):
 
 class FullAdder(BinaryGate):
 
-    def __init__(self, a, b, c):
-        self.a = a
-        self.b = b
-        self.c = c
+    def __init__(self, input_list=None):
+        self.a = input_list[0]
+        self.b = input_list[1]
+        self.c = input_list[2] 
         self.subsum = None
         self.subxor = None
         self.sumfinal = None
         self.carryfinal = None
         self.output = None
+        # self.carryterm_left = None
+        self.carry_middle = None
+        self.carryterm_right = None
+
+    def assert_block(self):
+        assert self.a == 1
+        assert self.b == 0
+        assert self.c == 0
+        assert self.subxor == 1
+        assert self.sumfinal == 1
+        # assert self.subsum == 0
+        # assert self.suband == 0
+        # assert self.subcarryxor == 0
+        # assert self.carryfinal == 0
 
     def sum1(self):
+        # C xor (A xor B)
+        # (A xor B)
         if self.a + self.b == 1:
             self.subxor = 1
         else:
             self.subxor = 0
 
+        # C xor (A xor B)
         if self.subxor + self.c == 1:
             self.sumfinal = 1
         else:
             self.sumfinal = 0
 
     def carry(self):
-        # A and B
-        if self.a==1 and self.b==1:
-            self.subsum = 1
-        else:
-            self.subsum = 0
 
-        if self.subxor + self.subsum == 1:
-            self.carryfinal = 1
+        if self.b == 1 or self.c == 1:
+            self.carry_middle == 1
         else:
-            self.carryfinal = 0
+            self.carry_middle == 0
+
+        if self.a == 1 or self.b ==1:
+            self.carryterm_left = 1
+        else:
+            self.carryterm_left = 0
+
+        if self.a == 1 or self.c == 1:
+            self.carryterm_right == 1
+        else:
+            self.carryterm_right == 0
+
+        if self.carryterm_left == 1 & self.carry_middle == 1 & self.carryterm_right == 1:
+            print('hi')
+            self.carryfinal == 1
+        else:
+            self.carryfinal == 0
+
         
     def return1(self):
-        print('a:', self.a, 'b:', self.b, 'c:', self.c, 'subxor:', self.subxor, 'sumfinal:', self.sumfinal, 'carryfinal:', self.carryfinal )
+        print('a:', self.a, 'b:', self.b, 'c:', self.c, 'subxor:', self.subxor, '|', 'sumfinal:', self.sumfinal, 'carryfinal:', self.carryfinal )
 
 
 
@@ -211,10 +240,15 @@ def half_adder():
     ha1 = HalfAdder('ha1')
     print(ha1.getOutput())
 
-def full_adder():
-    fa = FullAdder(1, 0, 0)
+def full_adder(testing=False):
+    input_list = [1, 0, 0]
+    if testing:
+        input_list = [1, 0, 0]
+    fa = FullAdder(input_list=input_list)
     fa.sum1()
     fa.carry()
     fa.return1()
+    if testing:
+        fa.assert_block()
 
-full_adder()
+full_adder(testing=True)
