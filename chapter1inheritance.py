@@ -1,40 +1,47 @@
 # inheritance & logic gates
 # what is the output value? 
 # a powerful part of object-oriented programming is method that will use
-# code that does not exist yet
+# code that does not exist ye
+
 class LogicGate:
 
-    def __init__(self,n):
-        self.name = n
+    def __init__(self, name):
+        self.name = name
         self.output = None
 
-    def getName(self):
+    def get_name(self):
         return self.name
-
-    def getOutput(self):
-        self.output = self.performGateLogic()
+    
+    def get_output(self):
+        self.output = self.run_gate_function()
         return self.output
-
 
 class BinaryGate(LogicGate):
 
     def __init__(self,n):
         LogicGate.__init__(self,n)
 
-        self.pinA = None
-        self.pinB = None
+        self.a = None
+        self.b = None
 
-    def getPinA(self):
-        if self.pinA == None:
-            return int(input("Enter Pin A input for gate "+self.getName()+"-->"))
-        else:
-            return self.pinA.getFrom().getOutput()
+    def binary_quickset(self, a, b):
+        self.a = a
+        self.b = b
 
-    def getPinB(self):
-        if self.pinB == None:
-            return int(input("Enter Pin B input for gate "+self.getName()+"-->"))
+
+    def get_a(self):
+        if self.a == None:
+            return int(input("Enter Pin A input for gate " + self.get_name() + ':'))
+        # if gate has received logic from another pin, don't prompt user, instead use following flow
         else:
-            return self.pinB.getFrom().getOutput()
+            return self.a
+
+    def get_b(self):
+        if self.a == None:
+            return int(input("Enter Pin B input for gate "+self.get_name()+ ":"))
+        else:
+            return self.b
+'''
 
     def setNextPin(self,source):
         if self.pinA == None:
@@ -44,20 +51,30 @@ class BinaryGate(LogicGate):
                 self.pinB = source
             else:
                 print("Cannot Connect: NO EMPTY PINS on this gate")
-
+'''
 class AndGate(BinaryGate):
 
     def __init__(self,n):
         BinaryGate.__init__(self,n)
 
-    def performGateLogic(self):
+    def run_gate_function(self):
 
-        a = self.getPinA()
-        b = self.getPinB()
+        a = self.get_a()
+        b = self.get_b()
         if a==1 and b==1:
             return 1
         else:
             return 0
+
+def understand_and():
+    ag = AndGate('first')
+    ag.binary_quickset(1, 1)
+    print(ag)
+
+
+
+understand_and()
+'''
 
 class NandGate(AndGate):
     # functionality does not require a new __init__ method
@@ -143,7 +160,9 @@ class Connector:
 
     def getTo(self):
         return self.togate
+'''
 
+'''
 class HalfAdder(BinaryGate):
 
     def __init__(self,n):
@@ -249,3 +268,4 @@ def full_adder(testing=False):
         fa.assert_block()
 
 full_adder(testing=False)
+'''
