@@ -187,10 +187,7 @@ class FullAdder(BinaryGate):
         assert self.c == 0
         assert self.subxor == 1
         assert self.sumfinal == 1
-        # assert self.subsum == 0
-        # assert self.suband == 0
-        # assert self.subcarryxor == 0
-        # assert self.carryfinal == 0
+        assert self.carryfinal == 0
 
     def sum1(self):
         # C xor (A xor B)
@@ -209,25 +206,25 @@ class FullAdder(BinaryGate):
     def carry(self):
 
         if self.b == 1 or self.c == 1:
-            self.carry_middle == 1
+            self.carry_middle = 1
         else:
-            self.carry_middle == 0
+            self.carry_middle = 0
 
-        if self.a == 1 or self.b ==1:
+        if self.a == 1 or self.b == 1:
             self.carryterm_left = 1
         else:
             self.carryterm_left = 0
 
         if self.a == 1 or self.c == 1:
-            self.carryterm_right == 1
+            self.carryterm_right = 1
         else:
-            self.carryterm_right == 0
+            self.carryterm_right = 0
 
         if self.carryterm_left == 1 & self.carry_middle == 1 & self.carryterm_right == 1:
             print('hi')
-            self.carryfinal == 1
+            self.carryfinal = 1
         else:
-            self.carryfinal == 0
+            self.carryfinal = 0
 
         
     def return1(self):
@@ -241,7 +238,7 @@ def half_adder():
     print(ha1.getOutput())
 
 def full_adder(testing=False):
-    input_list = [1, 0, 0]
+    input_list = [1, 1, 0]
     if testing:
         input_list = [1, 0, 0]
     fa = FullAdder(input_list=input_list)
@@ -251,4 +248,4 @@ def full_adder(testing=False):
     if testing:
         fa.assert_block()
 
-full_adder(testing=True)
+full_adder(testing=False)
