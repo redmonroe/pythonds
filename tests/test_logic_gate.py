@@ -48,5 +48,6 @@ class TestAndGate:
 
     def test_rgf(self):
         ag = AndGate('test_AND')
-        ag.binary_quickset(1, 0)
-        assert ag.run_gate_function() == 0
+        ag.binary_quickset(1, 1)
+        ag.run_gate_function()
+        assert ag.get_output() == 1

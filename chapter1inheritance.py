@@ -28,30 +28,29 @@ class BinaryGate(LogicGate):
         self.a = a
         self.b = b
 
-
     def get_a(self):
         if self.a == None:
             return int(input("Enter Pin A input for gate " + self.get_name() + ':'))
         # if gate has received logic from another pin, don't prompt user, instead use following flow
         else:
-            return self.a
+            return self.a.get_from().get_output()
 
     def get_b(self):
-        if self.a == None:
+        if self.b == None:
             return int(input("Enter Pin B input for gate "+self.get_name()+ ":"))
         else:
-            return self.b
-'''
+            return self.b.get_from().get_output()
 
-    def setNextPin(self,source):
-        if self.pinA == None:
-            self.pinA = source
+
+    def set_next_pin(self,source):
+        if self.a == None:
+            self.a = source
         else:
-            if self.pinB == None:
-                self.pinB = source
+            if self.b == None:
+                self.b = source
             else:
                 print("Cannot Connect: NO EMPTY PINS on this gate")
-'''
+
 class AndGate(BinaryGate):
 
     def __init__(self,n):
@@ -66,14 +65,6 @@ class AndGate(BinaryGate):
         else:
             return 0
 
-def understand_and():
-    ag = AndGate('first')
-    ag.binary_quickset(1, 1)
-    print(ag)
-
-
-
-understand_and()
 '''
 
 class NandGate(AndGate):
@@ -161,6 +152,49 @@ class Connector:
     def getTo(self):
         return self.togate
 '''
+
+class Connector:
+    # this takes two gate objects
+    def __init__(self, from_gate, to_gate):
+        self.from_gate = from_gate
+        self.to_gate = to_gate
+
+        to_gate.set_next_pin(self)
+
+    def __repr__(self):
+        return f'input gate: {self.from_gate.name}, output gate: {self.to_gate.name}'
+
+    def get_from(self):
+        return self.from_gate
+
+    def get_to(self):
+        return self.to_gate
+
+
+def understand_connectors():
+    ## SO THE SCHEME IS 3 GATES and 2 connectors
+    # GATE 1 AND 1, 1 =1
+    # GATE 2 AND 1, 0 = 0
+    # GATE 3 AND (TAKES FROM GATE 1 & 2) SO 1, 0 = 0
+
+
+
+    ag = AndGate('first')
+    ag.binary_quickset(1, 1)
+    ag2 = AndGate('second')
+    ag2.binary_quickset(1, 0)
+    print('first AND input:', ag.a, ag.b)
+    print('second AND input:', ag2.a, ag2.b)
+    print('first AND output:', ag.get_output())
+    print('second AND output:', ag2.get_output())
+    conn1 = Connector(ag, ag2)
+    print(conn1)
+
+
+
+understand_connectors()
+
+
 
 '''
 class HalfAdder(BinaryGate):
