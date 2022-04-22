@@ -73,8 +73,8 @@ class Stack:
             self.items.append(it)
 
 
-    def __str__(self):
-        return self.items
+    # def __str__(self):
+    #     return self.items
 
     def erase_this_line(self):
         ''' just get rid of indent to run'''
@@ -104,20 +104,29 @@ def balanced_parens_simple():
 empty_test = ''
 first_test = '()'
 fail_test = '(()'
+fail2_test = '(()()()()()()'
 hard_test = '(()(())())'
 
 def paren_checker(test=None):
     s = Stack()
-    for item in test:
-        if item == '(':
-            s.push(item)
-        elif item == ')':
-            s.pop()
+    balanced = True
+    index = 0
+    while index < len(test) and balanced:
+        symbol = test[index]
+        if symbol == '(':
+            s.push(symbol)
+        else:
+            if s.is_empty():
+                balanced = False
+            else:
+                s.pop()
+        index = index + 1
 
-    if len(s.items):
-        return False
-    else:
+
+    if balanced and s.is_empty():
         return True
+    else:
+        return False
 
 answer = paren_checker(test=hard_test)
 assert answer == True
@@ -125,6 +134,35 @@ answer = paren_checker(test=first_test)
 assert answer == True
 answer = paren_checker(test=fail_test)
 assert answer == False
-print(paren_checker(test=empty_test))
+# print(paren_checker(test=fail2_test))
+# print(paren_checker(test=empty_test))
+
+def stack_converting_decimal_to_binary():
+    pass
+
+def decimal_to_binary(dec_number=None):
+    # keep dividing by two until we get to 0
+    s = Stack()
+    while dec_number > 0:
+        check = dec_number % 2
+        s.push(check)
+        dec_number = dec_number // 2
+        # print(f'dividing {dec_number}: check=', check)
+
+    binary_string = []
+    for i in range(len(s.items)):
+        item = s.items.pop()
+        binary_string.append(str(item))
+
+    # print(binary_string)
+
+    return ''.join(binary_string)
+
+for dec in range(500):
+    bin_str = decimal_to_binary(dec)
+    print(f'the binary value of {dec} = {bin_str}')
+    
+assert decimal_to_binary(233) == '11101001'
+assert decimal_to_binary(100) == '1100100'
 # breakpoint()
 # breakpoint()
