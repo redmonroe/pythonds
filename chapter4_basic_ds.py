@@ -97,5 +97,34 @@ class Stack:
         st2.revstring('fuckyou')
         print(''.join(st2.items))
 
+def balanced_parens_simple():
+    '''using stack with maths'''
+    pass
 
+empty_test = ''
+first_test = '()'
+fail_test = '(()'
+hard_test = '(()(())())'
+
+def paren_checker(test=None):
+    s = Stack()
+    for item in test:
+        if item == '(':
+            s.push(item)
+        elif item == ')':
+            s.pop()
+
+    if len(s.items):
+        return False
+    else:
+        return True
+
+answer = paren_checker(test=hard_test)
+assert answer == True
+answer = paren_checker(test=first_test)
+assert answer == True
+answer = paren_checker(test=fail_test)
+assert answer == False
+print(paren_checker(test=empty_test))
+# breakpoint()
 # breakpoint()
