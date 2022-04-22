@@ -38,9 +38,64 @@ def implement_ADT_queue_deque():
     pass
 
 class Stack:
-
+    ''' we are treating the bottom of the stack as the 'last in' point so that we can use constant time operations append and pop()'''
     def __init__(self):
         self.items = []
 
-st = Stack()
-breakpoint()
+    def push(self, item):
+        self.items.append(item)
+
+    def pop(self):
+        fo = self.items.pop()
+        return fo
+
+    def peek(self):
+        try:
+            return self.items[len(self.items)-1]
+        except IndexError as e:
+            print(e, 'peek method does not work on empty stack')
+
+    def is_empty(self):
+        if len(self.items):
+            return False
+        else:
+            return True
+
+    def size(self):
+        return len(self.items)
+
+    def revstring(self, mystr):
+        for l in mystr:
+            self.push(l)
+
+        for i in range(len(self.items)):
+            it = self.items.pop()
+            self.items.append(it)
+
+
+    def __str__(self):
+        return self.items
+
+    def erase_this_line(self):
+        ''' just get rid of indent to run'''
+        st = Stack()
+        st.push('5')
+        fo = st.pop()
+        print('pop', fo)
+        st.push(10)
+        fo = st.peek()
+        print('peek', fo)
+        bool1 = st.is_empty()
+        print('is_empty', bool1)
+        fo = st.pop()
+        print('pop another one off the top')
+        bool1 = st.is_empty()
+        print('is_empty', bool1)
+        print('size', st.size())
+
+        st2 = Stack()
+        st2.revstring('fuckyou')
+        print(''.join(st2.items))
+
+
+# breakpoint()
