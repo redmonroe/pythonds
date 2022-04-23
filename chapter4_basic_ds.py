@@ -8,7 +8,7 @@ data types in focus:
     - deque
     - stack(LIFO): ordered collection, addition & removal of items takes place at same end(top) cf 'base' is bottom4
         - stacks are how you think about browser history and probably UNDO button
-    - queue
+    - queue(FIFO): ordered collection (based on a list), addition happens at one end (the rear), removal at the other end (the front), items added wait their turn to be removed
     - list
     - linked list
 
@@ -205,6 +205,7 @@ sample_infix = '9 + 3 * 5 / ( 1 - 4 )' # = 9 3 5 1 4 - * / +
 
 def convert_to_postfix(infix=None):
     prec = {}
+    prec["**"] = 4
     prec["*"] = 3
     prec["/"] = 3
     prec["+"] = 2
@@ -270,4 +271,5 @@ def evaluate_postfix(postfix=None):
 answer = evaluate_postfix(postfix=sample_postfix)
 assert answer == 34
 assert evaluate_postfix(postfix='7 8 + 3 2 + /') == 3
-# breakpoint()
+answer = convert_to_postfix(infix='5 * 3 ** ( 4 - 2 )')
+breakpoint()
