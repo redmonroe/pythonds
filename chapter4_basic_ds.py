@@ -13,6 +13,20 @@ data types in focus:
     - linked list
 
 pre-fix, infix, postfix notations
+    - infix notation: when the operator appears between the operands: B x C, 10 * 12, 1 + 2
+    - prefix: operator before operands: x BC, * 10 12, + 1 2
+    - postfix: operator after: BC x, 10 12 *, 1 2 +
+    - neither post or pre needs parentheses to determine which operation goes first
+
+    A + B * C, would be pre => + A * B C  or post => A B C * +
+
+    more examples (a = 2, b=5, c=10, d=11) 63 is the answer
+    in                      pre                      post
+    A + B * C + D           + + A * B C D            A B C * + D +
+
+order of operations PEMDAS is one way to address ambiguity of which operations goes first
+fully parenthesized expressions are another; post and prefix yet another
+
 
 when is a stack/queue/deque the appropriate data structure? 
 - 
@@ -141,28 +155,79 @@ def stack_converting_decimal_to_binary():
     pass
 
 def decimal_to_binary(dec_number=None):
-    # keep dividing by two until we get to 0
     s = Stack()
     while dec_number > 0:
         check = dec_number % 2
         s.push(check)
         dec_number = dec_number // 2
-        # print(f'dividing {dec_number}: check=', check)
 
     binary_string = []
     for i in range(len(s.items)):
         item = s.items.pop()
         binary_string.append(str(item))
 
-    # print(binary_string)
-
     return ''.join(binary_string)
 
-for dec in range(500):
-    bin_str = decimal_to_binary(dec)
-    print(f'the binary value of {dec} = {bin_str}')
-    
+# for dec in range(500):
+#     bin_str = decimal_to_binary(dec)
+#     print(f'the binary value of {dec} = {bin_str}')
+
 assert decimal_to_binary(233) == '11101001'
 assert decimal_to_binary(100) == '1100100'
+
+def base_converter(dec_number, base):
+    digits = "0123456789ABCDEF"
+    s = Stack()
+    while dec_number > 0:
+        check = dec_number % base
+        s.push(check)
+        dec_number = dec_number // base
+
+    newString = ""
+    while not s.is_empty():
+        newString = newString + digits[s.pop()]
+
+    return newString
+
+print(base_converter(26,26))
+print(base_converter(256,16))
+
+def notation_algos():
+    pass
+
+sample_infix = '( A + B )'
+# sample_infix = "A * B + C * D"
+
+def convert_to_postfix(infix=None):
+    # target = + A B
+    prec = {}
+    prec["*"] = 3
+    prec["/"] = 3
+    prec["+"] = 2
+    prec["-"] = 2
+    prec["("] = 1
+    rator = Stack() # opstack
+    post_fix_notation = []
+    infix = infix.split()
+
+    for l in infix:
+        if l in "ABCDEFGHIJKLMNOPQRSTUVWXYZ" or l in "0123456789":
+            post_fix_notation.append(l)
+        elif l == '(':
+            rator.push(l)
+        elif l == ')':
+            top_token = rator.pop() # this pops the + in A + B, the ) is the signal
+            while top_token != '(': #
+                post_fix_notation.append(top_token)
+                top_token = rator.pop()
+        else:
+            while (not rator.is_empty()) and (prec[rator.peek()] >= prec[l]):
+                post_fix_notation.append(rator.pop())
+            rator.push(l)
+
+    while not rator.is_empty():
+        post_fix_notation.append(rator.pop())
+    return ' '.join(post_fix_notation)
+
 # breakpoint()
-# breakpoint()
+print(convert_to_postfix(infix=sample_infix))
