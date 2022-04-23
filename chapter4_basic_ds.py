@@ -196,10 +196,14 @@ def notation_algos():
     pass
 
 sample_infix = '( A + B )'
-# sample_infix = "A * B + C * D"
+sample_infix = "A * B + C * D"
+sample_infix = '( A + B ) * ( C + D )'
+sample_infix = "( A + B ) * C" # = A B + C *
+sample_infix = "A + B * C" # = A B C * +
+
+sample_infix = '9 + 3 * 5 / ( 1 - 4 )' # = 9 3 5 1 4 - * / +
 
 def convert_to_postfix(infix=None):
-    # target = + A B
     prec = {}
     prec["*"] = 3
     prec["/"] = 3
@@ -229,5 +233,8 @@ def convert_to_postfix(infix=None):
         post_fix_notation.append(rator.pop())
     return ' '.join(post_fix_notation)
 
-# breakpoint()
 print(convert_to_postfix(infix=sample_infix))
+
+def evaluate_postfix(postfix=None):
+
+# breakpoint()
