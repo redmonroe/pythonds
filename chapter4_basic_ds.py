@@ -8,7 +8,7 @@ data types in focus:
     - deque
     - stack(LIFO): ordered collection, addition & removal of items takes place at same end(top) cf 'base' is bottom4
         - stacks are how you think about browser history and probably UNDO button
-    - queue(FIFO): ordered collection (based on a list), addition happens at one end (the rear), removal at the other end (the front), items added wait their turn to be removed
+    - queue(FIFO): ordered collection (based on a list), addition happens at one end (the rear), removal at the other end (the front), items added wait their turn to be removedq
     - list
     - linked list
 
@@ -49,7 +49,66 @@ def implement_ADT_queue_deque():
     size() returns the number of items on the stack. It needs no parameters and returns an integer.
     '''
 
-    pass
+class Queue:
+    '''what constant time efficiencies can I find?'''
+    def __init__(self):
+        self.items = []
+
+    def enqueue(self, item):
+        self.items.insert(0, item)
+
+    def dequeue(self):
+        try:
+            return self.items.pop()
+        except IndexError as e:
+            print(f'{self} is empty with error {e}')
+
+    def is_empty(self):
+        return self.items == []
+
+    def size(self):
+        return len(self.items)
+
+qq = Queue()
+qq.enqueue('4')
+assert qq.items == ['4']
+assert qq.size() == 1
+assert qq.is_empty() == False
+r = qq.dequeue()
+assert r == '4'
+
+name_list = ['fred', 'tori', 'monica', 'aj', 'daniella', 'hole', 'seaperson', 'alexandria', 'tes', 'billmon', 'artemis', 'arlemustus', 'frangelico', 'dean', 'hard', 'jelson', 'ask', 'prentices', 'larman', 'alejendron', 'fellt', 'crg', 'carg', 'larg', 'brenno', 'able', 'john', 'pila', 'baxter', 'frienddzz']
+
+def hot_potato(name_list, num):
+    print(f'{name_list[0]} has the hot potato. Let us play the game')
+
+    reset_num = num
+    qq = Queue()
+    for name in name_list:
+        qq.enqueue(name)
+
+    # print('size:', qq.size())
+    
+    while qq.size() > 1:
+        # print('size:', qq.size())
+        popped_name = qq.dequeue()
+        qq.enqueue(popped_name)
+        num = num - 1
+        # print('num:', num)
+        # breakpoint()
+        if num == 0:
+            popped_name = qq.dequeue()
+            num = reset_num
+    # print(qq.items)
+    return qq.items
+
+
+final_boy = hot_potato(name_list, 6)
+assert final_boy == ['carg']
+# breakpoint()
+assert hot_potato(name_list, 10)[0] == 'pila'
+
+
 
 class Stack:
     ''' we are treating the bottom of the stack as the 'last in' point so that we can use constant time operations append and pop()'''
@@ -85,10 +144,6 @@ class Stack:
         for i in range(len(self.items)):
             it = self.items.pop()
             self.items.append(it)
-
-
-    # def __str__(self):
-    #     return self.items
 
     def erase_this_line(self):
         ''' just get rid of indent to run'''
@@ -189,8 +244,8 @@ def base_converter(dec_number, base):
 
     return newString
 
-print(base_converter(26,26))
-print(base_converter(256,16))
+# print(base_converter(26,26))
+# print(base_converter(256,16))
 
 def notation_algos():
     pass
@@ -261,7 +316,7 @@ def evaluate_postfix(postfix=None):
             second_token = int(operand_stack.pop())
             first_token = int(operand_stack.pop())
             result = do_math(l, first_token, second_token)
-            print(f'{first_token} {l} {second_token} = {result}')
+            # print(f'{first_token} {l} {second_token} = {result}')
             operand_stack.push(result)
 
     return operand_stack.pop()
@@ -272,4 +327,3 @@ answer = evaluate_postfix(postfix=sample_postfix)
 assert answer == 34
 assert evaluate_postfix(postfix='7 8 + 3 2 + /') == 3
 answer = convert_to_postfix(infix='5 * 3 ** ( 4 - 2 )')
-breakpoint()
