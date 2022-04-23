@@ -233,8 +233,41 @@ def convert_to_postfix(infix=None):
         post_fix_notation.append(rator.pop())
     return ' '.join(post_fix_notation)
 
-print(convert_to_postfix(infix=sample_infix))
+# print(convert_to_postfix(infix=sample_infix))
 
+sample_postfix = '4 5 6 * +'
 def evaluate_postfix(postfix=None):
+    # single digit integer values only
 
+    def do_math(operator, first_rand, second_rand):
+        if operator == '*':
+            return first_rand * second_rand
+        elif operator == '/':
+            return first_rand / second_rand
+        elif operator == '+':
+            return first_rand + second_rand
+        else:
+            return first_rand - second_rand
+
+    # what are we attempting to do here?  target value is: 34
+    operand_stack = Stack()
+    for l in postfix.split(' '):
+        if l in "0123456789":
+            # place 4, 5, 6 on the stack
+            operand_stack.push(l)
+        elif l in '*/+-':
+            # preserve order carefully in case of division
+            second_token = int(operand_stack.pop())
+            first_token = int(operand_stack.pop())
+            result = do_math(l, first_token, second_token)
+            print(f'{first_token} {l} {second_token} = {result}')
+            operand_stack.push(result)
+
+    return operand_stack.pop()
+
+
+
+answer = evaluate_postfix(postfix=sample_postfix)
+assert answer == 34
+assert evaluate_postfix(postfix='7 8 + 3 2 + /') == 3
 # breakpoint()
