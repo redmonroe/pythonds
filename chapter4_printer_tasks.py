@@ -6,62 +6,97 @@ from datetime import datetime
 class Printer:
     '''we are trying to get the total print time'''
     '''this might be were the queue should be, are there two?'''
-    def __init__(self, quality):
-        self.quality = quality
-        self.print_time = None
-        self.task = None
+    def __init__(self, ppm):
+        self.quality = ppm
+        self.current_task = None
+        self.time_remaining = 0
 
-    def set_task(self, task=None):
-        # breakpoint()
-        self.task = task
-        print(f'printing task: request time: {task.request_time} len: {task.length} timestampt: {task.timestamp}')
+    def tick(self):
+        if self.current_task != None:
+            self.time_remaining = self.time_remaining - 1
+            if self.time_remaining <= 0:
+                self.current_task = None
 
-    def set_print_time(self):
-        '''draft 10 pages per minutes'''
-        if self.quality == 'draft':
-            self.print_time = self.task.length * 6
-            print(f'print time: {self.print_time} seconds')
+    def busy(self):
+        if self.current_task != None:
+            return True
+        else:
+            return False
+
+    def start_next(self, new_task):
+        self.current_task = new_task
+        self.time_remaining = new_task.get_pages() * 60/self.quality
 
 class Task:
     
-    def __init__(self, request_time, other=None):
-        self.request_time = request_time 
-        self.timestamp = None 
-        self.length = None
+    def __init__(self, time, other=None):
+        self.timestamp = time 
+        self.pages = random.randrange(1,21)
 
-    def set_length(self):
-        self.length = random.randrange(1,21)
+    def get_stamp(self):
+        return self.timestamp
 
-    def set_ts(self):
-        dt = datetime.now()
-        self.timestamp = datetime.timestamp(dt)
+    def get_pages(self):
+        return self.pages
 
-    def __repr__(self):
-        return f'request time: {self.request_time} timestamp: {self.timestamp} length: {self.length}'
-
-class PrintQueue(Queue):
-    pass
-
-
-qq = PrintQueue()
-for currentSecond in range(3600):
+    def wait_time(self, current_time):
+        return current_time - self.timestamp
+        
+def new_print_task():
     num = random.randrange(1, 181)
     if num == 180:
-        task = Task(currentSecond)
-        task.set_length()
-        task.set_ts()
-        qq.enqueue(task)
+        return True
+    else:
+        return False
 
-while qq.is_empty() == False:
-    print('start size:', qq.size())
-    printer = Printer(quality='draft')
-    task = qq.dequeue()
-    print('end size:', qq.size())
-    # breakpoint()
+def simulation(num_secs, pages_per_minute):
+    
+    lab_printer = Printer(pages_per_minute)
+    print_queue = Queue()
+    waiting_times = []
 
-    printer.set_task(task=task)
-    printer.set_print_time()
-    '''dequeue into printer'''
+    for current_second in range(num_secs):
+        if new_print_task():
+            task = Task(current_second)
+            print_queue.enqueue(task)
+
+        if (not lab_printer.busy()) and (not print_queue.is_empty()):
+            nexttask = print_queue.dequeue()
+            waiting_times.append(nexttask.wait_time(current_second))
+            lab_printer.start_next(nexttask)
+
+        lab_printer.tick()
+
+    average_wait = sum(waiting_times)/len(waiting_times)
+    print(f'average wait {average_wait}, tasks remaining {print_queue.size()}')
+
+
+for i in range(10):
+    simulation(3600, 5)
+
+
+        
+
+
+# qq = PrintQueue()
+# for currentSecond in range(3600):
+#     num = random.randrange(1, 181)
+#     if num == 180:
+#         task = Task(currentSecond)
+#         task.set_length()
+#         task.set_ts()
+#         qq.enqueue(task)
+
+# while qq.is_empty() == False:
+#     print('start size:', qq.size())
+#     printer = Printer(quality='draft')
+#     task = qq.dequeue()
+#     print('end size:', qq.size())
+#     # breakpoint()
+
+#     printer.set_task(task=task)
+#     printer.set_print_time()
+#     '''dequeue into printer'''
     
 # breakpoint()
 
