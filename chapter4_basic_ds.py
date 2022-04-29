@@ -108,6 +108,18 @@ assert final_boy == ['carg']
 # breakpoint()
 assert hot_potato(name_list, 10)[0] == 'pila'
 
+class Printer:
+    pass
+
+class Task:
+    pass
+
+class PrintQueue:
+    pass
+
+
+
+
 
 
 class Stack:
