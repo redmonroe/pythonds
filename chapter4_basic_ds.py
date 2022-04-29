@@ -5,7 +5,7 @@ linear data structures:
     - once at item is added it remains in that position relative to the other elements that come before or after
 
 data types in focus: 
-    - deque
+    - deque: double-ended queue, new items can be added or removed at either end, removal and addition is not enforced by this datastructure but through consistent use of addition and removal operators
     - stack(LIFO): ordered collection, addition & removal of items takes place at same end(top) cf 'base' is bottom4
         - stacks are how you think about browser history and probably UNDO button
     - queue(FIFO): ordered collection (based on a list), addition happens at one end (the rear), removal at the other end (the front), items added wait their turn to be removedq
@@ -48,6 +48,59 @@ def implement_ADT_queue_deque():
 
     size() returns the number of items on the stack. It needs no parameters and returns an integer.
     '''
+class Dequeue: 
+    """
+    Deque() creates a new deque that is empty. It needs no parameters and returns an empty deque.
+
+    addFront(item) adds a new item to the front of the deque. It needs the item and returns nothing.
+
+    addRear(item) adds a new item to the rear of the deque. It needs the item and returns nothing.
+
+    removeFront() removes the front item from the deque. It needs no parameters and returns the item. The deque is modified.
+
+    removeRear() removes the rear item from the deque. It needs no parameters and returns the item. The deque is modified.
+
+    isEmpty() tests to see whether the deque is empty. It needs no parameters and returns a boolean value.
+
+    size() returns the number of items in the deque. It needs no parameters and returns an integer.
+    """
+
+    def __init__(self):
+        self.items = []
+
+    def add_front(self, item):
+        self.items.insert(0, item)
+
+    def remove_front(self):
+        return self.items.pop(0)
+
+    def add_rear(self, item):
+        self.items.append(item)
+    
+    def remove_rear(self):
+        return self.items.pop()
+
+    def is_empty(self):
+        return self.items == []
+
+    def size(self):
+        return len(self.items)
+
+dq = Dequeue()
+dq.add_front(1)
+dq.add_front(2)
+print(dq.remove_front())
+print(dq.remove_front())
+
+dq.add_front('cat')
+dq.add_front('koko minkie')
+dq.add_rear('steve')
+print(dq.remove_rear())
+
+print(dq.is_empty())
+print(dq.size())
+
+
 
 class Queue:
     '''what constant time efficiencies can I find?'''
@@ -107,20 +160,6 @@ final_boy = hot_potato(name_list, 6)
 assert final_boy == ['carg']
 # breakpoint()
 assert hot_potato(name_list, 10)[0] == 'pila'
-
-class Printer:
-    pass
-
-class Task:
-    pass
-
-class PrintQueue:
-    pass
-
-
-
-
-
 
 class Stack:
     ''' we are treating the bottom of the stack as the 'last in' point so that we can use constant time operations append and pop()'''
