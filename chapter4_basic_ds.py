@@ -9,8 +9,8 @@ data types in focus:
     - stack(LIFO): ordered collection, addition & removal of items takes place at same end(top) cf 'base' is bottom4
         - stacks are how you think about browser history and probably UNDO button
     - queue(FIFO): ordered collection (based on a list), addition happens at one end (the rear), removal at the other end (the front), items added wait their turn to be removedq
-    - list
-    - linked list
+    - list: an unordered collection of item
+    - linked list: each item contains information about the NEXT item, information about the items relative positions is not located OUTSIDE of the list items, contained in NODEs
 
 pre-fix, infix, postfix notations
     - infix notation: when the operator appears between the operands: B x C, 10 * 12, 1 + 2
@@ -48,6 +48,110 @@ def implement_ADT_queue_deque():
 
     size() returns the number of items on the stack. It needs no parameters and returns an integer.
     '''
+class Node:
+    '''None: plays a special role; a reference to None indicates that there is no next node'''
+    '''constructor usually shown as self.next = None'''
+    '''called grounding the node'''
+
+    def __init__(self, init_data):
+        self.data = init_data
+        self.next = None
+
+    def get_data(self):
+        return self.data
+
+    def get_next(self):
+        return self.next
+
+    def set_data(self, new_data):
+        self.data = new_data
+
+    def set_next(self, new_next):
+        self.next = new_next
+
+def test_node():
+    temp = Node(83)
+    print(temp.get_data())
+    
+# test_node()
+
+class UnorderedList:
+
+    def __init__(self):
+        self.head = None
+
+    def add(self, item):
+        '''each item must reside in a node'''
+        temp = Node(item)
+
+        '''now, we set the "next" reference of the new Node to refer to the old first node of the list'''
+        temp.set_next(self.head)
+        self.head = temp
+
+    def is_empty(self):
+        '''returns True if self.head is a reference to None'''
+        '''will only be True if there are no nodes in the linked list'''
+        return self.head == None
+
+    '''linked list traversal'''
+    '''traversal means systematically visiting each node'''
+    def size(self):
+        current = self.head
+        count = 0
+        while current != None:
+            count = count + 1
+            current = current.get_next()
+
+        return count
+
+    def search(self, item):
+        current = self.head
+        found = False
+        while current != None and not found:
+            if current.get_data() == item:
+                found = True
+            else:
+                current = current.get_next()
+
+        return found
+
+    def remove(self, item):
+        current = self.head
+        found = False
+        while current != None and not found:
+            if current.get_data() == item:
+                found = True
+            else:
+                current = current.get_next()
+
+        return found
+
+    def __str__(self):
+        current = self.head
+        return_list = []
+        while current != None:
+            current = current.get_next()
+            return_list.append(current)
+
+        return f'{return_list}'
+            
+
+def list_runner():
+    mylist = UnorderedList()
+    mylist.add(17)
+    mylist.add(28)
+    mylist.add(100)
+    breakpoint()
+    print(mylist.size())
+    print(mylist.search(100))
+    print(mylist)
+
+list_runner()
+
+
+
+
+
 class Dequeue: 
     """
     Deque() creates a new deque that is empty. It needs no parameters and returns an empty deque.
@@ -75,6 +179,7 @@ class Dequeue:
         return self.items.pop(0)
 
     def add_rear(self, item):
+        '''rear has lower time complexity'''
         self.items.append(item)
     
     def remove_rear(self):
@@ -86,21 +191,41 @@ class Dequeue:
     def size(self):
         return len(self.items)
 
-dq = Dequeue()
-dq.add_front(1)
-dq.add_front(2)
-print(dq.remove_front())
-print(dq.remove_front())
+    def __str__(self):
+        return f'{self.items}'
 
-dq.add_front('cat')
-dq.add_front('koko minkie')
-dq.add_rear('steve')
-print(dq.remove_rear())
+def dequeue_work():
+    dq = Dequeue()
+    dq.add_front(1)
+    dq.add_front(2)
+    print(dq.remove_front())
+    print(dq.remove_front())
 
-print(dq.is_empty())
-print(dq.size())
+    dq.add_front('cat')
+    dq.add_front('koko minkie')
+    dq.add_rear('steve')
+    print(dq.remove_rear())
 
+    print(dq.is_empty())
+    print(dq.size())
 
+    str1 = 'racecar'
+
+def palindrome_checker(str1=None):
+    is_palindrome = Dequeue()
+    for item in str1:
+        is_palindrome.add_rear(item)
+
+    while is_palindrome.size() > 1:
+        if is_palindrome.remove_front() == is_palindrome.remove_rear():
+            print('ok')
+
+    if is_palindrome.size() >= 1:
+        print('this is a palindrome')
+    else:
+        print('this is not a palindrome')
+
+# palindrome_checker(str1=str1)
 
 class Queue:
     '''what constant time efficiencies can I find?'''
@@ -133,7 +258,7 @@ assert r == '4'
 name_list = ['fred', 'tori', 'monica', 'aj', 'daniella', 'hole', 'seaperson', 'alexandria', 'tes', 'billmon', 'artemis', 'arlemustus', 'frangelico', 'dean', 'hard', 'jelson', 'ask', 'prentices', 'larman', 'alejendron', 'fellt', 'crg', 'carg', 'larg', 'brenno', 'able', 'john', 'pila', 'baxter', 'frienddzz']
 
 def hot_potato(name_list, num):
-    print(f'{name_list[0]} has the hot potato. Let us play the game')
+    # print(f'{name_list[0]} has the hot potato. Let us play the game')
 
     reset_num = num
     qq = Queue()
