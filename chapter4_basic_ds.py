@@ -48,6 +48,7 @@ def implement_ADT_queue_deque():
 
     size() returns the number of items on the stack. It needs no parameters and returns an integer.
     '''
+
 class Node:
     '''None: plays a special role; a reference to None indicates that there is no next node'''
     '''constructor usually shown as self.next = None'''
@@ -76,12 +77,106 @@ class Node:
     def set_previous(self, new_prev):
         self.prev = new_prev
 
-    def __str__(self):
-        return f'{self.get_data()}'
+    def __gt__(self, comparison):
+        return self.get_data() > comparison.get_data()
 
-def test_node():
-    temp = Node(83)
-    print(temp.get_data())
+    def __lt__(self, comparison):
+        return self.get_data() < comparison.get_data()
+
+    def __str__(self):
+        return f'Node: {self.get_data()}'
+
+class OrderedList:
+
+    def __init__(self):
+        self.head = None
+
+    def add(self, item):
+        '''each item must reside in a node'''
+        temp = Node(item)
+        '''now, we set the "next" reference of the new Node to refer to the old first node of the list'''
+        temp.set_next(self.head)
+        self.head = temp
+
+    def add2(self, item):
+        current = self.head
+        previous = None
+        stop = False
+        while current != None and not stop:
+            if current.get_data() > item:
+                stop = True
+            else:
+                previous = current
+                current = current.get_data()
+
+        temp = Node(item)
+        if previous == None:
+            temp.set_next(self.head)
+            self.head = temp
+        else:
+            temp.set_next(current)
+            previous.set_next(temp)
+
+    def is_empty(self):
+        '''returns True if self.head is a reference to None'''
+        '''will only be True if there are no nodes in the linked list'''
+        return self.head == None
+
+    '''linked list traversal'''
+    '''traversal means systematically visiting each node'''
+    def size(self):
+        current = self.head
+        count = 0
+        while current != None:
+            count = count + 1
+            current = current.get_next()
+
+        return count
+
+    def remove(self, item):
+        current = self.head
+        found = False
+        previous = None
+        while current != None and not found:
+            if current.get_data() == item:
+                found = True
+            else:
+                previous = current
+                current = current.get_next()
+            
+            if previous == None:
+                self.head = current.get_next()
+            else:
+                previous.set_next(current.get_next())
+
+    def see(self):
+        print_list = []
+        current = self.head
+        while current != None:
+            print_list.append(current.get_data())
+            # print(current.get_data())
+            current = current.get_next() 
+        print(print_list)
+
+def test_ordered():
+    ol = OrderedList()
+    ol.add(1)
+    ol.add(3)
+    ol.add2(2)
+    print('ol version 1')
+    ol.see()
+    print('ol2 version 2')
+    ol2 = OrderedList()
+    ol2.add2(1)
+    ol2.add2(3)
+    ol2.add2(2)
+    ol2.see()
+
+
+
+test_ordered()
+
+
 
 class UnorderedList:
 
@@ -167,7 +262,7 @@ def list_runner():
     print('see ==> min_list3 removed')
     mylist.see()
 
-list_runner()
+# list_runner()
 
 def building_up_ll():
     ul = UnorderedList()
@@ -183,12 +278,6 @@ def building_up_ll():
     '''ul = [fucksticks, egg_crates]'''
     assert ul.head.get_data() == 'egg_crates'
     assert ul.head.get_next().get_data() == 'fucksticks'
-    # assert ul.head.get_next().get_previous().get_data() == 'egg_crates'
-
-    # breakpoint()
-
-
-
 
 class Dequeue: 
     """
