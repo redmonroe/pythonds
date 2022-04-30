@@ -56,6 +56,7 @@ class Node:
     def __init__(self, init_data):
         self.data = init_data
         self.next = None
+        self.previous = None
 
     def get_data(self):
         return self.data
@@ -63,17 +64,24 @@ class Node:
     def get_next(self):
         return self.next
 
+    def get_previous(self):
+        return self.previous
+
     def set_data(self, new_data):
         self.data = new_data
 
     def set_next(self, new_next):
         self.next = new_next
 
+    def set_previous(self, new_prev):
+        self.prev = new_prev
+
+    def __str__(self):
+        return f'{self.get_data()}'
+
 def test_node():
     temp = Node(83)
     print(temp.get_data())
-    
-# test_node()
 
 class UnorderedList:
 
@@ -83,10 +91,10 @@ class UnorderedList:
     def add(self, item):
         '''each item must reside in a node'''
         temp = Node(item)
-
         '''now, we set the "next" reference of the new Node to refer to the old first node of the list'''
         temp.set_next(self.head)
         self.head = temp
+        self.head.set_previous(temp)
 
     def is_empty(self):
         '''returns True if self.head is a reference to None'''
@@ -118,36 +126,66 @@ class UnorderedList:
     def remove(self, item):
         current = self.head
         found = False
+        previous = None
         while current != None and not found:
             if current.get_data() == item:
                 found = True
             else:
+                previous = current
                 current = current.get_next()
-
-        return found
-
-    def __str__(self):
-        current = self.head
-        return_list = []
-        while current != None:
-            current = current.get_next()
-            return_list.append(current)
-
-        return f'{return_list}'
             
+            if previous == None:
+                self.head = current.get_next()
+            else:
+                previous.set_next(current.get_next())
+
+    def see(self):
+        current = self.head
+        while current != None:
+            print(current.get_data())
+            current = current.get_next()            
 
 def list_runner():
+    mynode = Node('mein_nodt')
     mylist = UnorderedList()
-    mylist.add(17)
-    mylist.add(28)
-    mylist.add(100)
-    breakpoint()
-    print(mylist.size())
-    print(mylist.search(100))
-    print(mylist)
+    print('head:', mylist.head)
+    mylist.add('min_list1')
+    print('head:', mylist.head)
+    mylist.add('min_list2')
+    print('head:', mylist.head)
+    mylist.add('min_list3')
+    print('head:', mylist.head)
+    mylist.add('min_list4')
+    print('head:', mylist.head)
+    print('see = >')
+    mylist.see()
+    print('size:', mylist.size())
+    print('search:', mylist.search(100))
+
+    print('search:', mylist.search('min_list2'))
+    mylist.remove('min_list3')
+    print('see ==> min_list3 removed')
+    mylist.see()
 
 list_runner()
 
+def building_up_ll():
+    ul = UnorderedList()
+    ''' ul = []'''
+    assert ul.head == None
+    ul.add('fucksticks')
+    '''ul = [fucksticks]'''
+    next1 = ul.head.get_next()
+    assert next1 == None #.get_data() doesn't work here because next1 == None, ie 'end of list'
+    prev1 = ul.head.get_previous()
+    assert prev1 == None
+    ul.add('egg_crates')
+    '''ul = [fucksticks, egg_crates]'''
+    assert ul.head.get_data() == 'egg_crates'
+    assert ul.head.get_next().get_data() == 'fucksticks'
+    # assert ul.head.get_next().get_previous().get_data() == 'egg_crates'
+
+    # breakpoint()
 
 
 
