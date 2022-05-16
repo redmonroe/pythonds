@@ -11,6 +11,8 @@ data types in focus:
     - queue(FIFO): ordered collection (based on a list), addition happens at one end (the rear), removal at the other end (the front), items added wait their turn to be removedq
     - list: an unordered collection of item
     - linked list: each item contains information about the NEXT item, information about the items relative positions is not located OUTSIDE of the list items, contained in NODEs
+        - linked list v. array: both ordered data structure, however, an array stores its elements contiguously in memory.  thus if we do a linklist insertion properly we
+        can make it constant time as we should only be adjusting at most the data of two elements
 
 pre-fix, infix, postfix notations
     - infix notation: when the operator appears between the operands: B x C, 10 * 12, 1 + 2
