@@ -100,24 +100,24 @@ class OrderedList:
         temp.set_next(self.head)
         self.head = temp
 
-    def add2(self, item):
-        current = self.head
-        previous = None
-        stop = False
-        while current != None and not stop:
-            if current.get_data() > item:
-                stop = True
-            else:
-                previous = current
-                current = current.get_data()
+    # def add2(self, item):
+    #     current = self.head
+    #     previous = None
+    #     stop = False
+    #     while current != None and not stop:
+    #         if current.get_data() > item:
+    #             stop = True
+    #         else:
+    #             previous = current
+    #             current = current.get_data()
 
-        temp = Node(item)
-        if previous == None:
-            temp.set_next(self.head)
-            self.head = temp
-        else:
-            temp.set_next(current)
-            previous.set_next(temp)
+    #     temp = Node(item)
+    #     if previous == None:
+    #         temp.set_next(self.head)
+    #         self.head = temp
+    #     else:
+    #         temp.set_next(current)
+    #         previous.set_next(temp)
 
     def is_empty(self):
         '''returns True if self.head is a reference to None'''
@@ -160,23 +160,23 @@ class OrderedList:
             current = current.get_next() 
         print(print_list)
 
-def test_ordered():
-    ol = OrderedList()
-    ol.add(1)
-    ol.add(3)
-    ol.add2(2)
-    print('ol version 1')
-    ol.see()
-    print('ol2 version 2')
-    ol2 = OrderedList()
-    ol2.add2(1)
-    ol2.add2(3)
-    ol2.add2(2)
-    ol2.see()
+# def test_ordered():
+#     ol = OrderedList()
+#     ol.add(1)
+#     ol.add(3)
+#     ol.add2(2)
+#     print('ol version 1')
+#     ol.see()
+#     print('ol2 version 2')
+#     ol2 = OrderedList()
+#     ol2.add2(1)
+#     ol2.add2(3)
+#     ol2.add2(2)
+#     ol2.see()
 
 
 
-test_ordered()
+# test_ordered()
 
 
 
