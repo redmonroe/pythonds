@@ -41,8 +41,11 @@ hashing:
     - selection sort:
         - selection sort: makes only one exchange per pass through, finds largest value in set not in proper place in each pass, and moves it to proper location
     - insertion sort:
+        - maintains a growing sorted sublist 
     - shell sort:
     - merge sort:
+        - recursive alg that continually splits a list in half
+        - if list is empty or has one item it is sorted by definition, 
     - quick sort:
 
 '''
@@ -222,3 +225,84 @@ def selection_sort(list1):
 
 # selection_sort(list1)
 # print(list1)
+'''insertion sort'''
+def insertion_sort(list1):
+    for index in range(1, len(list1)):
+        current_value = list1[index]
+        position = index
+        position1 = index
+
+        while position > 0 and list1[position - 1] > current_value:
+            list1[position] = list1[position-1]
+            position = position - 1
+        
+        list1[position] = current_value
+        breakpoint()
+
+# insertion_sort(list1)
+# print(list1)
+'''shell sort'''
+# print(list1)
+def gap_insert_sort(list1, start, gap):
+    for i in range(start + gap, len(list1), gap): # 5-9
+        # print(f'gap_inserting withn range start:{start+gap}, stop:{len(list1)}, step:{gap})')
+
+        current_value = list1[i]
+        position = i 
+
+        while position >= gap and list1[position - gap] > current_value:
+            # print(f'gap while loop: {position}: inserting {list1[position - gap]} into {list1[position]}')
+            list1[position] = list1[position - gap]
+            position = position - gap
+            print(list1)
+
+        list1[position] = current_value
+
+def shell_sort(list1):
+    sublist_count = len(list1)//2
+    while sublist_count > 0:
+        for start_position in range(sublist_count):
+            gap_insert_sort(list1, start_position, sublist_count)
+            print('after increment of size', sublist_count, 'the list is', list1)
+
+        sublist_count = sublist_count//2
+
+# shell_sort(list1)
+# print(list1)
+
+'''merge sort'''
+def merge_sort(list1):
+    print('splitting', list1)
+    if len(list1) > 1:
+        mid = len(list1)//2
+        lefthalf = list1[:mid]
+        righthalf = list1[mid:]
+
+        merge_sort(lefthalf)
+        merge_sort(righthalf)
+
+        i = 0
+        k = 0
+        j = 0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i] <= righthalf[j]:
+                list1[k] = lefthalf[i]
+                i += 1
+            else:
+                list1[k] = righthalf[j]
+                j += 1
+            k += 1
+
+        while i < len(lefthalf):
+            list1[k] = lefthalf[i]
+            i += 1
+            k += 1
+
+        while j < len(righthalf):
+            list1[k] = righthalf[j]
+            j += 1
+            k += 1
+        print('merging:', list1)
+
+merge_sort(list1)
+print(list1, 'FINALE')
