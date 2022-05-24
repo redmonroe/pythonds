@@ -44,10 +44,14 @@ hashing:
         - maintains a growing sorted sublist 
     - shell sort:
     - merge sort:
+        - uses divide and conquer strategy 
         - recursive alg that continually splits a list in half
         - if list is empty or has one item it is sorted by definition, 
     - quick sort:
-
+        - uses divide and conquer strategy 
+        - does not use additional storage a la mergesort
+        - pivot value: can be midpoint, first item, 
+        - split point: the actual place in the final list that the pivot value belongs
 '''
 
 
@@ -304,5 +308,49 @@ def merge_sort(list1):
             k += 1
         print('merging:', list1)
 
-merge_sort(list1)
-print(list1, 'FINALE')
+# merge_sort(list1)
+# print(list1, 'FINALE')
+'''quick sort'''
+def quick_sort(alist):
+   quickSortHelper(alist,0,len(alist)-1)
+
+def quickSortHelper(alist,first,last):
+   if first<last:
+
+       splitpoint = partition(alist,first,last)
+
+       quickSortHelper(alist,first,splitpoint-1)
+       quickSortHelper(alist,splitpoint+1,last)
+
+
+def partition(alist,first,last):
+   pivotvalue = alist[first]
+
+   leftmark = first+1
+   rightmark = last
+
+   done = False
+   while not done:
+
+       while leftmark <= rightmark and alist[leftmark] <= pivotvalue:
+           leftmark = leftmark + 1
+
+       while alist[rightmark] >= pivotvalue and rightmark >= leftmark:
+           rightmark = rightmark -1
+
+       if rightmark < leftmark:
+           done = True
+       else:
+           temp = alist[leftmark]
+           alist[leftmark] = alist[rightmark]
+           alist[rightmark] = temp
+
+   temp = alist[first]
+   alist[first] = alist[rightmark]
+   alist[rightmark] = temp
+
+
+   return rightmark
+
+quick_sort(list1)
+print(list1)
