@@ -36,7 +36,8 @@ def trees_as_list_of_lists():
     print(my_tree)
 
 # trees_as_list_of_lists()
-''' binary tree: first'''
+
+''' binary tree: with lists of lists'''
 def BinaryTree(r):
     return [r, [], []] # constructs a list with root node r, and two empty sublists for the children
 
@@ -45,5 +46,142 @@ def insert_left(root, new_branch):
     if len(t)  > 1:
         root.insert(1, [new_branch, t, []])
     else:
-        root.insert(1, [new_branch], [], [])
+        root.insert(1, [new_branch, [], []])
     return root
+
+def insert_right(root, new_branch):
+    t = root.pop(2)
+    if len(t)  > 1:
+        root.insert(2, [new_branch, [], t])
+    else:
+        root.insert(2, [new_branch], [], [])
+    return root
+
+def get_root_val(root):
+    return root[0]
+
+def set_root_val(root, root_value):
+    root[0] = root_value
+
+def get_left_child(root):
+    return root[1]
+
+def get_right_child(root):
+    return root[2]
+
+# r = BinaryTree(3)
+# insert_left(r, 4)
+# insert_left(r, 5)
+# insert_left(r, 6)
+# insert_left(r, 7)
+# left = get_left_child(r)
+# print(left)
+# set_root_val(left, 9)
+# print(r)
+# insert_left(left, 11)
+# print(r)
+# print(get_right_child(r))
+
+'''nodes and references: class-based tree'''
+class BinaryTree:
+
+    def __init__(self, root_obj):
+        self.key = root_obj
+        self.left_child = None
+        self.right_child = None
+
+    def insert_left(self, new_node):
+        if self.left_child == None:
+            self.left_child = BinaryTree(new_node)
+        else:
+            t = BinaryTree(new_node)
+            t.left_child = self.left_child
+            self.left_child = t
+
+    def insert_right(self, new_node):
+        if self.right_child== None:
+            self.right_child= BinaryTree(new_node)
+        else:
+            t = BinaryTree(new_node)
+            t.right_child = self.right_child
+            self.right_child = t
+
+    def get_right_child(self):
+        return self.right_child
+
+    def get_left_child(self):
+        return self.left_child
+    
+    def set_root_val(self, obj):
+        self.key = obj
+
+    def get_root_val(self):
+        return self.key
+
+# r = BinaryTree('a')
+# print(r.get_root_val())
+# print('initial_get_left_call:', r.get_left_child())
+# r.insert_left('b')
+# print(r.get_left_child().get_root_val())
+# print(r.insert_right('c'))
+# print(r.get_right_child())
+# print(r.get_right_child().get_root_val())
+# print(r.get_right_child().set_root_val('heelo'))
+# print(r.get_right_child().get_root_val())
+
+'''parse trees'''
+'''
+parse trees can be used to represent real-world constructions like sentences or mathematical expressions
+
+building a parse tree:
+1) break up expression string into list of tokens
+2) for math: 4 kinds of tokens:
+    1) left paren
+    2) right paren
+    3) operators
+    4) operands
+3) always true:
+    - we know that when we read a left paren we are starting a new expression (and we should start a new tree)
+    - thus, we know if we use right paren, we have finished the expression
+    - we know that operands are going to be leaf nodes and children of operators
+    - we know that every operators is going to have both a left and right child
+'''
+from chapter4_basic_ds import Stack
+
+def build_parse_tree(fp_exp):
+    fp_list = fp_exp.split()
+    p_stack = Stack()
+    expression_tree = BinaryTree('')
+    p_stack.push(expression_tree)
+    current_tree = expression_tree
+
+    for item in fp_list:
+        if item == '(':
+            current_tree.insert_left('')
+            p_stack.push(current_tree)
+            current_tree = current_tree.get_left_child()
+
+        elif item in ['+', '-', '*', '/']:
+            current_tree.set_root_val(item)
+            current_tree.insert_right('')
+            p_stack.push(current_tree)
+            current_tree = current_tree.get_right_child()
+        
+        elif item == ')':
+            current_tree = P_stack.pop()
+
+        elif item not in ['+', '-', '*', '/', ')']:
+            try:
+                current_tree.set_root_val(int(item))
+                parent = p_stack.pop()
+                current_tree = parent
+
+            except ValueError:
+                raise ValueError('token "{}" is not a valid integer'.format(item))
+
+    return expression_tree
+
+'''evaluating the parse tree we have built'''
+
+
+ 
