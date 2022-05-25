@@ -154,6 +154,7 @@ def build_parse_tree(fp_exp):
     expression_tree = BinaryTree('')
     p_stack.push(expression_tree)
     current_tree = expression_tree
+    breakpoint()
 
     for item in fp_list:
         if item == '(':
@@ -168,12 +169,13 @@ def build_parse_tree(fp_exp):
             current_tree = current_tree.get_right_child()
         
         elif item == ')':
-            current_tree = P_stack.pop()
+            current_tree = p_stack.pop()
 
         elif item not in ['+', '-', '*', '/', ')']:
             try:
                 current_tree.set_root_val(int(item))
                 parent = p_stack.pop()
+                breakpoint()
                 current_tree = parent
 
             except ValueError:
@@ -182,6 +184,100 @@ def build_parse_tree(fp_exp):
     return expression_tree
 
 '''evaluating the parse tree we have built'''
+'''
+the following recursive function allows us to evaluate a parse tree and return a numerical result
+'''
+import operator
 
+def evaluate(parse_tree):
+    opers = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv}
+    
+    left_c = parse_tree.get_left_child()
+    right_c = parse_tree.get_right_child()
 
- 
+    if left_c and right_c:
+        fn = opers[parse_tree.get_root_val()]
+        return fn(evaluate(left_c), evaluate(right_c))
+    else:
+        return parse_tree.get_root_val()
+
+func_exp = '( 3 + 4 )'
+func_exp = '( ( 3 * 4 ) * 10 )'
+# parse_tree = build_parse_tree(func_exp)
+# print(evaluate(parse_tree))
+
+'''tree traversals'''
+'''
+there are 3 commonly used patterns to access all the nodes of a tree
+- preorder: root first -> recursively traverse throught left subtree -> recursively traverse through right subtree
+- inorder: left subtree => root subtree => right subtree
+- postorder: left => right => root
+'''
+
+from binarytree import Node
+
+book = {'title': 'Jazz', 'chapter1': 'Us_JAZz', 'chapter2': 'French_Jazz', 'section_US': 'section1' }
+
+class TransparentBinaryTree:
+    '''first attempt: pass in a value and pprintable Node is consume value'''
+
+    def __init__(self, root_obj):
+        self.key = Node(root_obj)
+        self.left_child = None
+        self.right_child = None
+
+    def insert_left(self, new_node):
+        if self.left_child == None:
+            self.left_child = TransparentBinaryTree(new_node)
+        else:
+            t = TransparentBinaryTree(new_node)
+            t.left_child = self.left_child
+            self.left_child = t
+
+    def insert_right(self, new_node):
+        if self.right_child == None:
+            self.right_child = TransparentBinaryTree(new_node)
+        else:
+            t = TransparentBinaryTree(new_node)
+            t.right_child = self.right_child
+            self.right_child = t
+
+    def get_right_child(self):
+        return self.right_child
+
+    def get_left_child(self):
+        return self.left_child
+    
+    def set_root_val(self, obj):
+        self.key = obj
+
+    def get_root_val(self):
+        return self.key
+
+def build_book_tree(parts): # contraint here is that we are just working with binary tree
+
+    p_stack = Stack()
+    # book_tree = TransparentBinaryTree('temp_root')
+    book_tree = Node('temp_root')
+    p_stack.push(book_tree)
+    current_tree = book_tree
+    print(book_tree) 
+
+    for k, v in parts.items():
+        if k == 'title':
+            book_tree = Node(v)
+        if k == 'chapter1':
+            book_tree.left = Node(v)
+        if k == 'chapter2':
+            book_tree.right = Node(v)
+
+    print(book_tree) 
+    # breakpoint()
+    # return root
+    return book_tree
+
+# root = Node(1)
+# root.left = Node(2)
+# root.right = Node(3)
+root = build_book_tree(book)
+# print(root)
