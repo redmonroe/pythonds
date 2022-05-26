@@ -32,6 +32,11 @@ are stored in the queue is determined by their priority (highest in front, lowes
 
 binary heaps and priority queue: to avoid the cost sorting and inserting we implement priority queues with binary heaps
 
+complete binary tree: an otherwise binary tree that has all of its levels filled out with the possible
+exception of the bottom level
+
+heap order property: parent key is always smaller or equal to the key of the children
+
 
 '''
 
@@ -251,5 +256,73 @@ def main():
 main()
     
 '''priority queue and binary heap'''
+
+class BinaryHeap:
+    def __init__(self):
+        self.heap_list = [0]
+        self.current_size = 0
+
+    def insert(self, k):
+        '''it is easy enough to add next to the proper place in the tree and maintain
+        completeness, however, this will often disrupt the heap order rule, so we will
+        need to perform a swap operation on most inserts when they violate heap order
+       the swapping will be done in another function that will percolate up the mis-
+       placed item''' 
+
+        self.heap_list.append(k)
+        self.current_size = self.current_size + 1
+        self.percolate_up(self.current_size)
+    
+    def percolate_up(self, i):
+        while i // 2 > 0:
+            if self.heap_list[i] < self.heap_list[i // 2]:
+                tmp = self.heap_list[i // 2]
+                self.heap_list[i // 2 ] = self.heap_list[i]
+                self.heap_list[i] = tmp
+            i = i // 2
+
+    def percolate_down(self, i):
+        while (i * 2) <= self.current_size:
+            minchild = self.minchild(i)
+            if self.heap_list[i] > self.heap_list[minchild]:
+                tmp = self.heap_list[i]
+                self.heap_list[i] = self.heap_list[minchild]
+                self.heap_list[minchild] = tmp
+            i = minchild
+
+    def minchild(self, i):
+        if i * 2 + 1 > self.current_size:
+            return i * 2
+        else:
+            if self.heap_list[i*2] < self.heap_list[i*2+1]:
+                return i * 2
+            else:
+                return i * 2 * 1
+
+    def del_min(self):
+        return_val = self.heap_list[1]
+        self.heap_list[1] = self.heap_list[self.current_size]
+        self.current_size = self.current_size - 1
+        self.heap_list.pop()
+        self.percolate_down(1)
+        return return_val
+
+    def build_heap(self, list1):
+        i = len(list1) // 2
+        self.current_size = len(list1)
+        self.heap_list = [0] + list1[:]
+        while (i > 0):
+            self.percolate_down(i)
+            i = i - 1
+
+def heap_main():
+    bh = BinaryHeap()
+    bh.build_heap([9,5,6,2,3])
+
+    print(bh.del_min())
+    print(bh.del_min())
+    print(bh.del_min())
+    print(bh.del_min())
+    print(bh.del_min())
 
 
