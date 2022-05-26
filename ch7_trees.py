@@ -83,34 +83,37 @@ def get_right_child(root):
 # print(get_right_child(r))
 
 '''nodes and references: class-based tree'''
-class BinaryTree:
+'''extension of Node class that allows pretty printing of trees'''
+from binarytree import Node
 
-    def __init__(self, key):
-        self.key = key 
-        self.left_child = None
-        self.right_child = None
+class BT(Node):
+
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
 
     def insert_left(self, new_node):
-        if self.left_child == None:
-            self.left_child = BinaryTree(new_node)
+        if self.left == None:
+            self.left = BT(new_node)
         else:
-            t = BinaryTree(new_node)
-            t.left_child = self.left_child
-            self.left_child = t
+            t = BT(new_node)
+            t.left = self.left
+            self.left = t
 
     def insert_right(self, new_node):
-        if self.right_child== None:
-            self.right_child= BinaryTree(new_node)
+        if self.right== None:
+            self.right= BT(new_node)
         else:
-            t = BinaryTree(new_node)
-            t.right_child = self.right_child
-            self.right_child = t
+            t = BT(new_node)
+            t.right = self.right
+            self.right = t
 
-    def get_right_child(self):
-        return self.right_child
+    def get_right(self):
+        return self.right
 
     def get_left_child(self):
-        return self.left_child
+        return self.left
     
     def set_root_val(self, obj):
         self.key = obj
@@ -118,16 +121,11 @@ class BinaryTree:
     def get_root_val(self):
         return self.key
 
-# r = BinaryTree('a')
-# print(r.get_root_val())
-# print('initial_get_left_call:', r.get_left_child())
-# r.insert_left('b')
-# print(r.get_left_child().get_root_val())
-# print(r.insert_right('c'))
-# print(r.get_right_child())
-# print(r.get_right_child().get_root_val())
-# print(r.get_right_child().set_root_val('heelo'))
-# print(r.get_right_child().get_root_val())
+r = BT('a')
+r.insert_left('b')
+r.insert_left('c')
+r.insert_right('10')
+print(r)
 
 '''parse trees'''
 '''
@@ -151,7 +149,7 @@ from chapter4_basic_ds import Stack
 def build_parse_tree(fp_exp):
     fp_list = fp_exp.split()
     p_stack = Stack()
-    expression_tree = BinaryTree('')
+    expression_tree = BT('')
     p_stack.push(expression_tree)
     current_tree = expression_tree
 
