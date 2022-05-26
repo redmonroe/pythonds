@@ -90,6 +90,7 @@ class BT(Node):
 
     def __init__(self, value):
         self.value = value
+        self.key = None
         self.left = None
         self.right = None
 
@@ -112,21 +113,20 @@ class BT(Node):
     def get_right(self):
         return self.right
 
-    def get_left_child(self):
+    def get_left(self):
         return self.left
     
     def set_root_val(self, obj):
-        self.key = obj
+        self.value = obj
 
     def get_root_val(self):
-        return self.key
+        return self.value
 
 r = BT('a')
 r.insert_left('b')
 r.insert_left('c')
 r.insert_right('10')
-print(r)
-
+# print(r)
 '''parse trees'''
 '''
 parse trees can be used to represent real-world constructions like sentences or mathematical expressions
@@ -149,21 +149,21 @@ from chapter4_basic_ds import Stack
 def build_parse_tree(fp_exp):
     fp_list = fp_exp.split()
     p_stack = Stack()
-    expression_tree = BT('')
+    expression_tree = BT('empty')
     p_stack.push(expression_tree)
     current_tree = expression_tree
 
     for item in fp_list:
         if item == '(':
-            current_tree.insert_left('')
+            current_tree.insert_left('empty')
             p_stack.push(current_tree)
-            current_tree = current_tree.get_left_child()
+            current_tree = current_tree.get_left()
 
         elif item in ['+', '-', '*', '/']:
             current_tree.set_root_val(item)
-            current_tree.insert_right('')
+            current_tree.insert_right('empty')
             p_stack.push(current_tree)
-            current_tree = current_tree.get_right_child()
+            current_tree = current_tree.get_right()
         
         elif item == ')':
             current_tree = p_stack.pop()
@@ -173,6 +173,7 @@ def build_parse_tree(fp_exp):
                 current_tree.set_root_val(int(item))
                 parent = p_stack.pop()
                 current_tree = parent
+                print(current_tree)
 
             except ValueError:
                 raise ValueError('token "{}" is not a valid integer'.format(item))
@@ -188,8 +189,8 @@ import operator
 def evaluate(parse_tree):
     opers = {'+': operator.add, '-': operator.sub, '*': operator.mul, '/': operator.truediv}
     
-    left_c = parse_tree.get_left_child()
-    right_c = parse_tree.get_right_child()
+    left_c = parse_tree.get_left()
+    right_c = parse_tree.get_right()
 
     if left_c and right_c:
         fn = opers[parse_tree.get_root_val()]
@@ -198,7 +199,7 @@ def evaluate(parse_tree):
         return parse_tree.get_root_val()
 
 func_exp = '( 3 + 4 )'
-# func_exp = '( ( 3 * 4 ) * 10 )'
+func_exp = '( ( ( 3 * 4 ) * 10 ) + 20 )'
 parse_tree = build_parse_tree(func_exp)
 print(evaluate(parse_tree))
 
@@ -210,8 +211,5 @@ there are 3 commonly used patterns to access all the nodes of a tree
 - postorder: left => right => root
 '''
 
-from binarytree import Node
-
-func_exp = '( 3 + 4 )'
 
 
