@@ -434,7 +434,7 @@ class Stack:
             print(e, 'peek method does not work on empty stack')
 
     def __str__(self):
-        return f'{self.items}'
+        return f'{self.items} < new items inserted here'
 
 
     def is_empty(self):

@@ -1,5 +1,9 @@
 '''trees'''
 '''
+BINARY TREE HAS AT MOST TWO CHILDREN AND THUS AT MOST TWO POINTERS TO THOSE CHILDREN
+
+don't think of them in terms of generality per level, think of them as a multi-dimensional doubly-linked list, you put stuff in and you can get to it faster because you can cut off large swaths of opportunities if the storage and lookup funcs are written with parallel concern
+
 CS trees unlike reg trees: root at top, leaves at bottom
 tree terms:
     - node: fundamental part of tree, referred to by its 'key', value of node is 'payload'
@@ -22,65 +26,14 @@ tree terms:
         - if each node in the tree has a max of 2 children, this is a BINARY TREE
     - definition 2: recursive definition
         - a tree is either empty or consists of a root and zero or more subtrees
+
+priority queue: a priority queue is similar to queue in that you remove from the front, but the order that items 
+are stored in the queue is determined by their priority (highest in front, lowest in back)
+
+binary heaps and priority queue: to avoid the cost sorting and inserting we implement priority queues with binary heaps
+
+
 '''
-
-def trees_as_list_of_lists():
-    my_tree = ['a',   #root
-      ['b',  #left subtree
-       ['d', [], []],
-       ['e', [], []] ],
-      ['c',  #right subtree
-       ['f', [], []],
-       [] ]
-     ]
-    print(my_tree)
-
-# trees_as_list_of_lists()
-
-''' binary tree: with lists of lists'''
-def BinaryTree(r):
-    return [r, [], []] # constructs a list with root node r, and two empty sublists for the children
-
-def insert_left(root, new_branch):
-    t = root.pop(1)
-    if len(t)  > 1:
-        root.insert(1, [new_branch, t, []])
-    else:
-        root.insert(1, [new_branch, [], []])
-    return root
-
-def insert_right(root, new_branch):
-    t = root.pop(2)
-    if len(t)  > 1:
-        root.insert(2, [new_branch, [], t])
-    else:
-        root.insert(2, [new_branch], [], [])
-    return root
-
-def get_root_val(root):
-    return root[0]
-
-def set_root_val(root, root_value):
-    root[0] = root_value
-
-def get_left_child(root):
-    return root[1]
-
-def get_right_child(root):
-    return root[2]
-
-# r = BinaryTree(3)
-# insert_left(r, 4)
-# insert_left(r, 5)
-# insert_left(r, 6)
-# insert_left(r, 7)
-# left = get_left_child(r)
-# print(left)
-# set_root_val(left, 9)
-# print(r)
-# insert_left(left, 11)
-# print(r)
-# print(get_right_child(r))
 
 '''nodes and references: class-based tree'''
 '''extension of Node class that allows pretty printing of trees'''
@@ -90,7 +43,6 @@ class BT(Node):
 
     def __init__(self, value):
         self.value = value
-        self.key = None
         self.left = None
         self.right = None
 
@@ -149,35 +101,41 @@ from chapter4_basic_ds import Stack
 def build_parse_tree(fp_exp):
     fp_list = fp_exp.split()
     p_stack = Stack()
-    expression_tree = BT('empty')
+    expression_tree = BT('center_ph')
     p_stack.push(expression_tree)
     current_tree = expression_tree
 
     for item in fp_list:
         if item == '(':
-            current_tree.insert_left('empty')
+            print(f'hit {item}')
+            current_tree.insert_left('left_ph')
             p_stack.push(current_tree)
-            current_tree = current_tree.get_left()
+            print('current tree in (:', current_tree)
+            current_tree = current_tree.get_left() # descent to left child
 
         elif item in ['+', '-', '*', '/']:
+            print(f'setting {current_tree} root val to {item}')
             current_tree.set_root_val(item)
-            current_tree.insert_right('empty')
+            current_tree.insert_right('right_ph') # if we have an operator, we know we already have an operand, and also that we need another operand
+            print(f'\npushing {item} onto Stack')
             p_stack.push(current_tree)
             current_tree = current_tree.get_right()
         
         elif item == ')':
-            current_tree = p_stack.pop()
+            print(f'hitting {item}')
+            pop_item = p_stack.pop()
+            print(f'popping {pop_item} from Stack')
+            current_tree = pop_item
 
         elif item not in ['+', '-', '*', '/', ')']:
             try:
+                print('updating operand:', item)
                 current_tree.set_root_val(int(item))
                 parent = p_stack.pop()
                 current_tree = parent
-                print(current_tree)
 
             except ValueError:
                 raise ValueError('token "{}" is not a valid integer'.format(item))
-
     return expression_tree
 
 '''evaluating the parse tree we have built'''
@@ -198,10 +156,11 @@ def evaluate(parse_tree):
     else:
         return parse_tree.get_root_val()
 
-func_exp = '( 3 + 4 )'
-func_exp = '( ( ( 3 * 4 ) * 10 ) + 20 )'
-parse_tree = build_parse_tree(func_exp)
-print(evaluate(parse_tree))
+# func_exp = '( 3 + 4 )'
+# func_exp = '( ( ( 3 * 4 ) * 10 ) + 20 )'
+# parse_tree = build_parse_tree(func_exp)
+# print('\nfinal tree:', parse_tree)
+# print(evaluate(parse_tree))
 
 '''tree traversals'''
 '''
@@ -211,5 +170,86 @@ there are 3 commonly used patterns to access all the nodes of a tree
 - postorder: left => right => root
 '''
 
+'''building from scratch: Node and BinaryTree'''
+
+class BSTNode:
+    def __init__(self, val=None):
+        self.left = None
+        self.right = None
+        self.val = val
+
+    def insert(self, val):
+        if not self.val:
+            self.val = val
+            return
+
+        if self.val == val:
+            return
+
+        if val < self.val:
+            if self.left:
+                self.left.insert(val)
+                return
+            self.left = BSTNode(val)
+            return
+
+        if self.right:
+            self.right.insert(val)
+            return
+        self.right = BSTNode(val)
+    
+    def get_min(self):
+        current = self
+        while current.left is not None:
+            current = current.left
+        return current.val
+
+    def inorder(self, vals):
+        if self.left is not None:
+            self.left.inorder(vals)
+        if self.val is not None:
+            vals.append(self.val)
+        if self.right is not None:
+            self.right.inorder(vals)
+        return vals
+
+    def preorder(self, vals):
+        if self.val is not None:
+            vals.append(self.val)
+        if self.left is not None:
+            self.left.preorder(vals)
+        if self.right is not None:
+            self.right.preorder(vals)
+        return vals
+
+    def postorder(self, vals):
+        if self.left is not None:
+            self.left.postorder(vals)
+        if self.right is not None:
+            self.right.postorder(vals)
+        if self.val is not None:
+            vals.append(self.val)
+        return vals
+
+def main():
+    nums = [12, 6, 18, 19, 21, 11, 3, 5, 4, 24, 18]
+    bst = BSTNode()
+    for num in nums:
+        bst.insert(num)
+    print("preorder:")
+    print(bst.preorder([])) # not empty list, because we are not passing in values
+    print("#")
+
+    print("postorder:")
+    print(bst.postorder([]))
+    print("#")
+
+    print("inorder:")
+    print(bst.inorder([]))
+    print("#")
+
+main()
+    
+'''priority queue and binary heap'''
 
 
