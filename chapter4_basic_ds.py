@@ -433,6 +433,10 @@ class Stack:
         except IndexError as e:
             print(e, 'peek method does not work on empty stack')
 
+    def __str__(self):
+        return f'{self.items}'
+
+
     def is_empty(self):
         if len(self.items):
             return False
