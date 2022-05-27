@@ -273,7 +273,7 @@ class BinaryHeap:
         self.current_size = self.current_size + 1
         self.percolate_up(self.current_size)
     
-    def percolate_up(self, i):
+    def percolate_up(self, i): # i: index is self.current_size + 1s
         while i // 2 > 0:
             if self.heap_list[i] < self.heap_list[i // 2]:
                 tmp = self.heap_list[i // 2]
@@ -318,11 +318,29 @@ class BinaryHeap:
 def heap_main():
     bh = BinaryHeap()
     bh.build_heap([9,5,6,2,3])
+    bh.insert(1)
+    bh.insert(4)
+    bh.insert(99)
+    bh.insert(100)
 
-    print(bh.del_min())
-    print(bh.del_min())
-    print(bh.del_min())
-    print(bh.del_min())
-    print(bh.del_min())
+    index = 1
+    init_len = len(bh.heap_list)
+    while index < init_len:
+        # breakpoint()
+        print(index, bh.del_min())
+        # print(index)
+        index += 1
+
+
+    # print(bh.del_min())
+    # print(bh.del_min())
+    # print(bh.del_min())
+    # print(bh.del_min())
+    # print(bh.del_min())
+    # print(bh.del_min())
+    # print(bh.del_min())
+    # print(bh.del_min())
+
+heap_main()
 
 
