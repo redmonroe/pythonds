@@ -27,16 +27,20 @@ tree terms:
     - definition 2: recursive definition
         - a tree is either empty or consists of a root and zero or more subtrees
 
-priority queue: a priority queue is similar to queue in that you remove from the front, but the order that items 
-are stored in the queue is determined by their priority (highest in front, lowest in back)
+PRIORITY QS AND BINARY HEAPS
+    -priority queue: a priority queue is similar to queue in that you remove from the front, but the order that items 
+    are stored in the queue is determined by their priority (highest in front, lowest in back)
 
-binary heaps and priority queue: to avoid the cost sorting and inserting we implement priority queues with binary heaps
+    -binary heaps and priority queue: to avoid the cost sorting and inserting we implement priority queues with binary heaps
 
-complete binary tree: an otherwise binary tree that has all of its levels filled out with the possible
-exception of the bottom level
+    -complete binary tree: an otherwise binary tree that has all of its levels filled out with the possible
+    exception of the bottom level
 
-heap order property: parent key is always smaller or equal to the key of the children
+    -heap order property: parent key is always smaller or equal to the key of the children
 
+BINARY SEARCH TREES:
+    - bst property: keys less than parent are left child, greater than are right child
+    - 
 
 '''
 
@@ -175,7 +179,7 @@ there are 3 commonly used patterns to access all the nodes of a tree
 - postorder: left => right => root
 '''
 
-'''building from scratch: Node and BinaryTree'''
+'''building from scratch: Node and BinarySearchTree'''
 
 class BSTNode:
     def __init__(self, val=None):
@@ -253,7 +257,7 @@ def main():
     print(bst.inorder([]))
     print("#")
 
-main()
+# main()
     
 '''priority queue and binary heap'''
 
@@ -326,21 +330,265 @@ def heap_main():
     index = 1
     init_len = len(bh.heap_list)
     while index < init_len:
-        # breakpoint()
         print(index, bh.del_min())
-        # print(index)
         index += 1
 
+# heap_main()
 
-    # print(bh.del_min())
-    # print(bh.del_min())
-    # print(bh.del_min())
-    # print(bh.del_min())
-    # print(bh.del_min())
-    # print(bh.del_min())
-    # print(bh.del_min())
-    # print(bh.del_min())
+'''Binary Search Tree'''
+class BinarySearchTree:
+    def __init__(self):
+        self.root = None
+        self.size = 0
 
-heap_main()
+    def length(self):
+        return self.size
 
+    def __len__(self):
+        return self.size
+    
+    def __iter__(self):
+        return self.root.__iter__()
 
+class TreeNode:
+    def __init__(self, key, val, left=None, right=None, parent=None):
+        '''use of optional parameters: we can either pass in only key/val or we can additionally send
+        in references to parents and children'''
+
+        self.key = key
+        self.payload = val
+        self.left = left
+        self.right = right
+        self.parent = parent
+
+    def has_left(self):
+        return self.left
+
+    def has_right(self):
+        return self.right
+
+    def is_left(self): # this returns a bool
+        return self.parent and self.parent.left == self
+
+    def is_right(self): # this returns a bool
+        return self.parent and self.parent.right == self
+    
+    def is_root(self):
+        return not self.parent
+    
+    def is_leaf(self):
+        return not (self.left or self.right)
+    
+    def has_any_children(self):
+        return self.left or self.right
+    
+    def has_both_children(self):
+        return self.left and self.right
+    
+    def replace_node_data(self, key, value, left, right):
+        self.key = key
+        self.payload = value
+        self.left = lc
+        self.right = rc
+        if self.has_left():
+            self.left.parent = self
+        if self.has_right():
+            self.right.parent = self
+
+    def put(self, key, val):
+        '''let's us build out our bst'''
+        '''if bst doesn't have a root it will create one, if it root node is already in place
+        then put calls subput() to search tree in following way:
+            - starting at root, search the binary tree comparing new key to the key in the current node.
+            if new key is less than the current node, search left, if new key is greater, search right
+            - when there is no left (or right) child, we have found the position in the tree where the new
+            node should be installed
+            - then, to add a node to the tree, create a new TreeNode object and insert the object at the point
+            discovered in the previous step
+
+        '''
+        if self.root:
+            self.subput(key, val, self.root) # makes call to subput
+        else:
+            self.root = TreeNode(key, val)
+        
+        self.size = self.size + 1
+    
+    def subput(self, key, val, current_node):
+        if key < current_node.key:
+            if current_node.has_left:
+                '''traverse left'''
+                self.subput(key, val, current_node.left)
+            else:
+                '''create new node once we are finished traversing'''
+                current_node.left = TreeNode(key, val, parent=current_node)
+        else:
+            '''traverse right'''
+            if current_node.has_right():
+                self.subput(key, val, current_node.right)
+            else:
+                current_node.right = TreeNode(key, val, parent=current_node)
+    
+    def __setitem__(self, key, val):
+        '''we can use put() like myZipTree['Plymouth'] = 55446'''
+        self.put(key, val) 
+
+    def get(self, key): # key is what we are looking for
+        '''retrieval'''
+        ''' 
+        
+        '''
+        if self.root:
+            res = self._get(key, self.root)
+            if res:
+                return res.payload
+            else:
+                return None
+    
+    def _get(self, key, current_node): # at first step, current_node is self.root
+        if not current_node:
+            return None
+        elif current_node.key == key: # does current_node.key match?
+            return current_node
+        elif key < current_node: # is key less than current_node? speed comes from here. traverse down until we get match
+            return self._get(key, current_node.left)
+        else:
+            return self._get(key, current_node.right)
+    
+    def __getitem__(self, key):
+        return self.get(key)
+    
+    def __contains__(self, key):
+        if self._get(key, self.root):
+            return True
+        else:
+            return False
+
+    def delete(self, key):
+        '''most baroque functionality of bst'''
+        ''' 
+        steps:
+        1 - find the node to delete with key
+             - if more then one node, then can search using self._get() to find TreeNode that needs to be
+            removed
+        2 - once we find the node, we must deal with three cases:
+            1: the node has no children
+            2: the node has one children
+            3: the node has two children
+
+        '''
+        if self.size > 1:
+            node_to_remove = self._get(key, self.root) # make sure that the node we are trying to get rid of actually exists
+            if node_to_remove: 
+                self.remove(node_to_remove)
+                self.size = self.size - 1
+            else:
+                raise KeyError('Error, key not in tree')
+        elif self.size == 1 and self.root.key == key:
+            self.root = None
+            self.size = self.size - 1
+        else:
+            raise KeyError('Error, key not in tree')
+    
+    def __delitem__(self, key):
+        self.delete(key)
+
+    def remove(self,currentNode):
+        '''case A: no children'''
+        if currentNode.is_leaf(): #leaf
+            if current_node == current_node.parent.left:
+               current_node.parent.left = None
+            else:
+               current_node.parent.right = None
+        # case B: has both children
+        elif current_node.has_both_children(): #interior
+           succ = current_node.find_successor()
+           succ.splice_out()
+           current_node.key = succ.key
+           current_node.payload = succ.payload
+
+        else: # this node has one child
+            if current_node.has_left():
+                if current_node.is_left():
+                    current_node.left.parent = current_node.parent
+                    current_node.parent.left = current_node.left
+                elif current_node.is_right():
+                    current_node.left.parent = current_node.parent
+                    current_node.parent.right = current_node.left
+                else:
+                    current_node.replace_node_data(current_node.left.key,
+                                    current_node.left.payload,
+                                    current_node.left.left,
+                                    current_node.left.right)
+            else:
+                if current_node.is_left():
+                  current_node.right.parent = current_node.parent
+                  current_node.parent.left = current_node.right
+                elif current_node.is_right():
+                   current_node.right.parent = current_node.parent
+                   current_node.parent.right = currentnode.right
+                else:
+                   current_node.replace_node_data(current_node.right.key,
+                                    current_node.right.payload,
+                                    current_node.right.left,
+                                    current_node.right.right)
+    
+    def find_successor(self):
+        succ = None
+        if self.has_right():
+            succ = self.right.find_min()
+        else:
+            if self.parent:
+                if self.is_left():
+                    succ = self.parent
+                else:
+                    self.parent.right = None
+                    succ = self.parent.find_successor()
+                    self.parent.right = self
+        return succ
+
+    def find_min(self):
+        current = self
+        while current.has_left():
+            current = current.left
+        return current
+
+    def splice_out(self):
+        if self.is_leaf():
+            if self.is_left():
+                self.parent.left = None
+            else:
+                self.parent.right = None
+        elif self.has_any_children():
+            if self.has_left():
+                if self.is_left():
+                    self.parent.left = self.left
+                else:
+                    self.parent.right = self.left
+                self.left.parent = self.parent
+            else:
+                if self.left:
+                    self.parent.left = self.right
+                else:
+                    self.parent.right = self.right
+                self.right.parent = self.parent
+
+    def __iter__(self):
+        if self:
+            if self.has_left():
+                for item in self.left():
+                    yield item
+            yield self.key
+            if self.has_left():
+                for item in self.right():
+                    yield item
+        
+def bst_main():
+    tree = BinarySearchTree()
+    tree[3] = 'red'
+    tree[4] = 'blue'
+    tree[6] = 'yellow'
+
+    print(tree[3])
+
+bst_main()
